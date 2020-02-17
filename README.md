@@ -1,5 +1,5 @@
 
-# Libam
+# Amlib
 ### General purpose C library, providing portable and efficient utilities
 
 ## Contents

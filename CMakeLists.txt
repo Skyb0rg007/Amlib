@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(LibAM
     VERSION 0.1.0
-    HOMEPAGE_URL "www.github.com/skyb0rg007/Libam"
+    HOMEPAGE_URL "www.github.com/skyb0rg007/Amlib"
     LANGUAGES C)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
