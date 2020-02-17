@@ -42,3 +42,48 @@
         - Allows for programs to filter logs from libraries without recompilation
         - Threadsafe logging
         - Provided log writers for standard FILE streams as well as journald
+
+## Target Platforms
+
+[x] x86_64 Linux
+
+[ ] x86_32 Linux
+
+[ ] Windows (Mingw64)
+
+[ ] Windows (MSVC)
+
+[ ] OSX (clang)
+
+[ ] Emscripten
+
+[ ] Android
+
+[ ] iOS
+
+## Building
+
+### CMake
+
+    $ mkdir _build
+    $ cd _build
+    $ cmake .. \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -G "Unix Makefiles" \
+        -DBUILD_TESTING=ON \
+        -DBUILD_SHARED=ON
+    $ cmake --build . --target am
+    $ cmake --build . --target install
+
+#### CMake Options
+- CMAKE\_BUILD\_TYPE
+    - Controls compiler optimization options
+    - Debug, Release, RelWithDebInfo, MinSizeRel
+- CMAKE\_INSTALL\_PREFIX
+    - Controls where to install the library
+- BUILD\_TESTING
+    - Controls whether or not to build tests (default: ON)
+- BUILD\_SHARED
+    - Controls whether Amlib is built as a shared library (default: ON)
+
