@@ -45,21 +45,14 @@
 
 ## Target Platforms
 
-[x] x86_64 Linux
-
-[ ] x86_32 Linux
-
-[ ] Windows (Mingw64)
-
-[ ] Windows (MSVC)
-
-[ ] OSX (clang)
-
-[ ] Emscripten
-
-[ ] Android
-
-[ ] iOS
+- [x] x86_64 Linux
+- [ ] x86_32 Linux
+- [ ] Windows (Mingw64)
+- [ ] Windows (MSVC)
+- [ ] OSX (clang)
+- [ ] Emscripten
+- [ ] Android
+- [ ] iOS
 
 ## Building
 
