@@ -62,8 +62,8 @@ AM_DIAGNOSTIC_POP
 /** @brief Exit the current thread
  * @param res The value to exit the thread with
  */
-static AM_INLINE void
-am_thread_exit(int res)
+static AM_INLINE
+void am_thread_exit(int res)
 {
     pthread_exit((void *)(intptr_t)res);
 }
@@ -72,8 +72,8 @@ am_thread_exit(int res)
  * @param t The thread id to check
  * @param res Pointer for the thread's return value
  */
-static AM_INLINE enum am_thread_error
-am_thread_join(am_thread t, int *res)
+static AM_INLINE
+enum am_thread_error am_thread_join(am_thread t, int *res)
 {
     void *retval;
 
@@ -89,22 +89,22 @@ am_thread_join(am_thread t, int *res)
 /** @brief Mark a thread as detached, ie. will no be joined
  * @param t The thread id to mark
  */
-static AM_INLINE enum am_thread_error
-am_thread_detach(am_thread t)
+static AM_INLINE
+enum am_thread_error am_thread_detach(am_thread t)
 {
     return pthread_detach(t) == 0 ? AM_THREAD_SUCCESS : AM_THREAD_ERROR;
 }
 
 /** @brief Access the current thread id */
-static AM_INLINE am_thread
-am_thread_current(void)
+static AM_INLINE
+am_thread am_thread_current(void)
 {
     return pthread_self();
 }
 
 /** @brief Compare two thread ids for equality */
-static AM_INLINE bool
-am_thread_equal(am_thread a, am_thread b)
+static AM_INLINE
+bool am_thread_equal(am_thread a, am_thread b)
 {
     return pthread_equal(a, b);
 }
@@ -114,8 +114,8 @@ am_thread_equal(am_thread a, am_thread b)
  * @param ts_out The time not slept, if inturrupted
  * @return -1 if interrupted, -2 for other errors, or 0 on success
  */
-static AM_INLINE int
-am_thread_sleep(const struct timespec *ts_in, struct timespec *ts_out)
+static AM_INLINE
+int am_thread_sleep(const struct timespec *ts_in, struct timespec *ts_out)
 {
     errno = 0;
     if (nanosleep(ts_in, ts_out) < 0) {
@@ -129,8 +129,8 @@ am_thread_sleep(const struct timespec *ts_in, struct timespec *ts_out)
 }
 
 /** @brief Cause the current thread to reliquish to the CPU */
-static AM_INLINE void
-am_thread_yield(void)
+static AM_INLINE
+void am_thread_yield(void)
 {
     sched_yield();
 }
@@ -138,8 +138,8 @@ am_thread_yield(void)
 /* Mutex */
 
 /** @brief Initialize a mutex */
-static AM_INLINE enum am_thread_error
-am_mutex_init(am_mutex *mtx, enum am_mutex_type type)
+static AM_INLINE
+enum am_thread_error am_mutex_init(am_mutex *mtx, enum am_mutex_type type)
 {
     int res;
     pthread_mutexattr_t attr;
@@ -158,15 +158,15 @@ am_mutex_init(am_mutex *mtx, enum am_mutex_type type)
 }
 
 /** @brief Destroy a mutex */
-static AM_INLINE void
-am_mutex_destroy(am_mutex *mtx)
+static AM_INLINE
+void am_mutex_destroy(am_mutex *mtx)
 {
     pthread_mutex_destroy(mtx);
 }
 
 /** @brief Acquire a mutex */
-static AM_INLINE enum am_thread_error
-am_mutex_lock(am_mutex *mtx)
+static AM_INLINE
+enum am_thread_error am_mutex_lock(am_mutex *mtx)
 {
     int res = pthread_mutex_lock(mtx);
     if (res == EDEADLK) {
@@ -179,8 +179,8 @@ am_mutex_lock(am_mutex *mtx)
 }
 
 /** @brief Try to acquire a mutex */
-static AM_INLINE enum am_thread_error
-am_mutex_trylock(am_mutex *mtx)
+static AM_INLINE
+enum am_thread_error am_mutex_trylock(am_mutex *mtx)
 {
     int res = pthread_mutex_trylock(mtx);
     if (res == EBUSY) {
@@ -196,8 +196,8 @@ am_mutex_trylock(am_mutex *mtx)
  * @param mtx A timed mutex
  * @param ts A timespec representing the amount of time to wait for the lock
  */
-static AM_INLINE enum am_thread_error
-am_mutex_timedlock(am_mutex *mtx, const struct timespec *ts)
+static AM_INLINE
+enum am_thread_error am_mutex_timedlock(am_mutex *mtx, const struct timespec *ts)
 {
     int res;
 
@@ -212,8 +212,8 @@ am_mutex_timedlock(am_mutex *mtx, const struct timespec *ts)
 }
 
 /** @brief Release a mutex */
-static AM_INLINE enum am_thread_error
-am_mutex_unlock(am_mutex *mtx)
+static AM_INLINE
+enum am_thread_error am_mutex_unlock(am_mutex *mtx)
 {
     return pthread_mutex_unlock(mtx) == 0 ? AM_THREAD_SUCCESS : AM_THREAD_ERROR;
 }
@@ -221,29 +221,29 @@ am_mutex_unlock(am_mutex *mtx)
 /* Condition variables */
 
 /** @brief Initialize a conditional variable */
-static AM_INLINE enum am_thread_error
-am_cond_init(am_cond *cond)
+static AM_INLINE
+enum am_thread_error am_cond_init(am_cond *cond)
 {
     return pthread_cond_init(cond, 0) == 0 ? AM_THREAD_SUCCESS : AM_THREAD_ERROR;
 }
 
 /** @brief Destroy a conditional variable */
-static AM_INLINE void
-am_cond_destroy(am_cond *cond)
+static AM_INLINE
+void am_cond_destroy(am_cond *cond)
 {
     pthread_cond_destroy(cond);
 }
 
 /** @brief Awaken one thread waiting on the conditional variable */
-static AM_INLINE enum am_thread_error
-am_cond_signal(am_cond *cond)
+static AM_INLINE
+enum am_thread_error am_cond_signal(am_cond *cond)
 {
     return pthread_cond_signal(cond) == 0 ? AM_THREAD_SUCCESS : AM_THREAD_ERROR;
 }
 
 /** @brief Awaken all threads waiting on the conditional variable */
-static AM_INLINE enum am_thread_error
-am_cond_broadcast(am_cond *cond)
+static AM_INLINE
+enum am_thread_error am_cond_broadcast(am_cond *cond)
 {
     return pthread_cond_broadcast(cond) == 0 ? AM_THREAD_SUCCESS : AM_THREAD_ERROR;
 }
@@ -252,15 +252,15 @@ am_cond_broadcast(am_cond *cond)
  * @param cond The condition variable to block on
  * @param mtx A locked mutex that is atomically unlocked during the function call
  */
-static AM_INLINE enum am_thread_error
-am_cond_wait(am_cond *cond, am_mutex *mtx)
+static AM_INLINE
+enum am_thread_error am_cond_wait(am_cond *cond, am_mutex *mtx)
 {
     return pthread_cond_wait(cond, mtx) == 0 ? AM_THREAD_SUCCESS : AM_THREAD_ERROR;
 }
 
 /** @brief Like am_cond_wait, but with a timeout */
-static AM_INLINE enum am_thread_error
-am_cond_timedwait(am_cond *cond, am_mutex *mtx, const struct timespec *ts)
+static AM_INLINE
+enum am_thread_error am_cond_timedwait(am_cond *cond, am_mutex *mtx, const struct timespec *ts)
 {
     int res;
 
@@ -277,43 +277,43 @@ am_cond_timedwait(am_cond *cond, am_mutex *mtx, const struct timespec *ts)
 /* Thread-specific data */
 
 /** @brief Create thread-specific storage */
-static AM_INLINE enum am_thread_error
-am_tss_create(am_tss *key, void (*dtor)(void *))
+static AM_INLINE
+enum am_thread_error am_tss_create(am_tss *key, void (*dtor)(void *))
 {
     return pthread_key_create(key, dtor) == 0 ? AM_THREAD_SUCCESS : AM_THREAD_ERROR;
 }
 
 /** @brief Delete thread-specific storage */
-static AM_INLINE void
-am_tss_delete(am_tss key)
+static AM_INLINE
+void am_tss_delete(am_tss key)
 {
     pthread_key_delete(key);
 }
 
-static AM_INLINE enum am_thread_error
-am_tss_set(am_tss key, void *val)
+static AM_INLINE
+enum am_thread_error am_tss_set(am_tss key, void *val)
 {
     return pthread_setspecific(key, val) == 0 ? AM_THREAD_SUCCESS : AM_THREAD_ERROR;
 }
 
-static AM_INLINE void *
-am_tss_get(am_tss key)
+static AM_INLINE
+void *am_tss_get(am_tss key)
 {
     return pthread_getspecific(key);
 }
 
 /* Once */
 
-static AM_INLINE void
-am_call_once(am_once_flag *flag, void (*fn)(void))
+static AM_INLINE
+void am_call_once(am_once_flag *flag, void (*fn)(void))
 {
     pthread_once(flag, fn);
 }
 
 /* Spinlocks */
 
-static AM_INLINE enum am_thread_error
-am_spinlock_init(am_spinlock *lock)
+static AM_INLINE
+enum am_thread_error am_spinlock_init(am_spinlock *lock)
 {
     /* no sharing w/ other processes */
     int ret;
@@ -327,14 +327,14 @@ am_spinlock_init(am_spinlock *lock)
     }
 }
 
-static AM_INLINE void
-am_spinlock_destroy(am_spinlock *lock)
+static AM_INLINE
+void am_spinlock_destroy(am_spinlock *lock)
 {
     pthread_spin_destroy(lock);
 }
 
-static AM_INLINE enum am_thread_error
-am_spinlock_lock(am_spinlock *lock)
+static AM_INLINE
+enum am_thread_error am_spinlock_lock(am_spinlock *lock)
 {
     int ret;
     ret = pthread_spin_lock(lock);
@@ -347,8 +347,8 @@ am_spinlock_lock(am_spinlock *lock)
     }
 }
 
-static AM_INLINE enum am_thread_error
-am_spinlock_trylock(am_spinlock *lock)
+static AM_INLINE
+enum am_thread_error am_spinlock_trylock(am_spinlock *lock)
 {
     int ret;
     ret = pthread_spin_trylock(lock);
@@ -361,8 +361,8 @@ am_spinlock_trylock(am_spinlock *lock)
     }
 }
 
-static AM_INLINE enum am_thread_error
-am_spinlock_unlock(am_spinlock *lock)
+static AM_INLINE
+enum am_thread_error am_spinlock_unlock(am_spinlock *lock)
 {
     int ret;
     ret = pthread_spin_unlock(lock);

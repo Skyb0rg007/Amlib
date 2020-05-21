@@ -22,11 +22,15 @@
  */
 #define AM_PRAGMA(val) _Pragma(#val)
 /** @brief Compile-time assertion */
-#define AM_STATIC_ASSERT(expr, message) _Static_assert(expr, message)
+#define AM_STATIC_ASSERT(expr, message) __extension__ _Static_assert(expr, message)
 /** @brief String literal representing the current location */
-#define AM_STRLOC __FILE__ ":" AM_STRINGIFY(__LINE__) ":" __PRETTY_FUNCTION__ "()"
+#define AM_STRLOC __FILE__ ":" AM_STRINGIFY(__LINE__)
 /** @brief Null-terminated string representing the current function */
-#define AM_STRFUNC ((const char *)(__PRETTY_FUNCTION__))
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#  define AM_STRFUNC ((const char *)(__func__))
+#else
+#  define AM_STRFUNC ((const char *)("???"))
+#endif
 /** @brief Get a pointer to the containing structure
  * @param ptr A pointer to the structure field
  * @param type The type of the containing structure
@@ -37,7 +41,7 @@
 /** @brief The alignment of the given type
  * @note Try not to provide function types unlessed typedef-ed
  */
-#define AM_ALIGNOF_TYPE(type) _Alignof(type)
+#define AM_ALIGNOF_TYPE(type) __extension__ _Alignof(type)
 
 /* Keywords */
 
@@ -103,6 +107,7 @@
  */
 #define AM_HAS_VARIADIC_MACROS 1
 #define AM_HAS_GLIBC_PROGNAME  1
+#define AM_HAS_BUILTIN_POPCOUNT 1
 
 /* Ignoring errors/warnings */
 

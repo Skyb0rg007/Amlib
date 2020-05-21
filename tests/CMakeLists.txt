@@ -7,7 +7,7 @@ function(am_test name src)
         PRIVATE
         ${ARGN})
     set_property(TARGET ${name} PROPERTY RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${outdir})
-    add_test(${name} ${name})
+    add_test(${name} ${outdir}/${name})
 endfunction(am_test)
 
 # threads
@@ -29,6 +29,10 @@ if(SYSTEMD_FOUND)
         logging/journal-control.c
         Systemd::systemd)
 endif()
+am_test(message_test
+    logging/message-test.c
+    )
+target_include_directories(message_test PRIVATE ../include)
 
 # data
 am_test(list_test
@@ -39,6 +43,15 @@ am_test(hashtable_test
     am)
 am_test(hlist_test
     data/hlist-test.c
+    am)
+am_test(rbtree_test
+    data/rbtree-test.c
+    am)
+am_test(vector_test
+    data/vector-test.c
+    am)
+am_test(string_test
+    data/string-test.c
     am)
 
 # concurrent

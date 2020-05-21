@@ -9,6 +9,8 @@
 #include "am/alloc.h"
 #include "am/atomic.h"
 
+#error NYI
+
 struct am__spmc_array {
     am_atomic_uint num_committed;
     unsigned length;

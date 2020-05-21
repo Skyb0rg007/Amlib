@@ -9,6 +9,8 @@
 #include "am/atomic.h"
 #include "am/alloc.h"
 
+#error NYI
+
 enum am_hashtable_mode {
     AM_HASHTABLE_MODE_DIRECT,
     AM_HASHTABLE_MODE_BYTESTRING

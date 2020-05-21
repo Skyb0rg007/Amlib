@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include <stdarg.h>
+#include <inttypes.h>
 #include "am/macros.h"
 
 enum am_log_level_flags {
@@ -21,7 +22,7 @@ enum am_log_level_flags {
 };
 
 /* Mask to get the log level */
-#define AM_LOG_LEVEL_MASK ~(AM_LOG_FLAG_RECURSION | AM_LOG_FLAG_FATAL)
+#define AM_LOG_LEVEL_MASK (~(AM_LOG_FLAG_RECURSION | AM_LOG_FLAG_FATAL))
 
 #define AM_LOG_WRITER_HANDLED   1
 #define AM_LOG_WRITER_UNHANDLED 0
@@ -59,14 +60,50 @@ am_log_writer_fn am_log_writer_default;
             "CODE_FILE", __FILE__, \
             "CODE_LINE", AM_STRINGIFY(__LINE__), \
             "CODE_FUNC", AM_STRFUNC, \
-            "MESSAGE", "%"PRId64": %s", 0 /* monotonic_time() */, G_STRLOC)
+            "MESSAGE", "%s", AM_STRLOC)
+
+#  define am_contract(domain, level, expr) \
+    ((expr) ? true : (am_log_structured_standard( \
+            domain, level, \
+            __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+            "%s: contract violation: \"%s\"", AM_STRFUNC, #expr), false))
 
 #if AM_HAS_VARIADIC_MACROS == 1
 AM_DIAGNOSTIC_PUSH
 AM_DIAGNOSTIC_IGNORE_VARIADIC_MACROS
+#  define am_log(dom, lvl, ...) \
+    am_log_structured_standard( \
+            dom, lvl, \
+            __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+            __VA_ARGS__)
 #  define am_error(...) \
     am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_ERROR | AM_LOG_FLAG_FATAL, \
+            NULL, AM_LOG_LEVEL_ERROR, \
+             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+             __VA_ARGS__)
+#  define am_notice(...) \
+    am_log_structured_standard( \
+            NULL, AM_LOG_LEVEL_NOTICE, \
+             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+             __VA_ARGS__)
+#  define am_critical(...) \
+    am_log_structured_standard( \
+            NULL, AM_LOG_LEVEL_CRITICAL | AM_LOG_FLAG_FATAL, \
+             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+             __VA_ARGS__)
+#  define am_warning(...) \
+    am_log_structured_standard( \
+            NULL, AM_LOG_LEVEL_WARNING, \
+             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+             __VA_ARGS__)
+#  define am_info(...) \
+    am_log_structured_standard( \
+            NULL, AM_LOG_LEVEL_INFO, \
+             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+             __VA_ARGS__)
+#  define am_debug(...) \
+    am_log_structured_standard( \
+            NULL, AM_LOG_LEVEL_DEBUG, \
              __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
              __VA_ARGS__)
 AM_DIAGNOSTIC_POP
@@ -75,7 +112,32 @@ AM_DIAGNOSTIC_PUSH
 AM_DIAGNOSTIC_IGNORE_VARIADIC_MACROS
 #  define am_error(fmt...) \
     am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_ERROR | AM_LOG_FLAG_FATAL, \
+            NULL, AM_LOG_LEVEL_ERROR, \
+             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+             fmt)
+#  define am_notice(fmt...) \
+    am_log_structured_standard( \
+            NULL, AM_LOG_LEVEL_NOTICE, \
+             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+             fmt)
+#  define am_critical(fmt, ...) \
+    am_log_structured_standard( \
+            NULL, AM_LOG_LEVEL_CRITICAL | AM_LOG_FLAG_FATAL, \
+             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+             fmt)
+#  define am_warning(fmt, ...) \
+    am_log_structured_standard( \
+            NULL, AM_LOG_LEVEL_WARNING, \
+             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+             fmt)
+#  define am_info(fmt, ...) \
+    am_log_structured_standard( \
+            NULL, AM_LOG_LEVEL_INFO, \
+             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
+             fmt)
+#  define am_debug(fmt, ...) \
+    am_log_structured_standard( \
+            NULL, AM_LOG_LEVEL_DEBUG, \
              __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
              fmt)
 AM_DIAGNOSTIC_POP

@@ -34,15 +34,17 @@ add_library(am
     # include/concurrent/array.h
     # include/concurrent/fifo.h
     # include/concurrent/hashtable.h
-    include/concurrent/ring_buffer.h
+    include/am/concurrent/ring_buffer.h
 
-    include/data/hash.h
-    include/data/hashtable.h
-    include/data/hlist.h
-    include/data/list.h
+    include/am/data/hash.h
+    include/am/data/hashtable.h
+    include/am/data/hlist.h
+    include/am/data/list.h
+    include/am/data/rbtree.h
+    include/am/data/string.h
 
+    src/rbtree.c
     src/logging.c
-    src/alloc.c
     src/concurrent-ring_buffer.c
     )
 target_link_libraries(am

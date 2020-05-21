@@ -39,10 +39,14 @@ void setup(void)
 {
     int ret;
     ret = am_tss_create(&g_log_structured_depth, NULL);
-    assert(ret == AM_THREAD_SUCCESS);
+    if (ret != AM_THREAD_SUCCESS) {
+        abort();
+    }
 
     ret = am_mutex_init(&g_messages_lock, AM_MUTEX_PLAIN);
-    assert(ret == AM_THREAD_SUCCESS);
+    if (ret != AM_THREAD_SUCCESS) {
+        abort();
+    }
 
     atexit(cleanup);
 }
@@ -147,6 +151,11 @@ void am_log_structured_array(
     /* Ensure logging is setup */
     am_call_once(&g_initialized, setup);
 
+    if (!am_contract("amlib", AM_LOG_LEVEL_ERROR, fields != NULL))
+        return;
+    if (!am_contract("amlib", AM_LOG_LEVEL_WARNING, num_fields > 0))
+        return;
+
     depth = (unsigned)(uintptr_t)am_tss_get(g_log_structured_depth);
 
     if (depth == 0) {
@@ -159,9 +168,9 @@ void am_log_structured_array(
     }
 
     assert(writer_func != NULL);
-    am_tss_set(g_log_structured_depth, (void *)(uintptr_t)(++depth));
+    am_tss_set(g_log_structured_depth, (void *)(uintptr_t)(depth + 1));
     writer_func(log_level, fields, num_fields, writer_userdata);
-    am_tss_set(g_log_structured_depth, (void *)(uintptr_t)(--depth));
+    am_tss_set(g_log_structured_depth, (void *)(uintptr_t)depth);
 
     if (log_level & AM_LOG_FLAG_FATAL) {
         log_abort((log_level & AM_LOG_FLAG_RECURSION) ? false : true);
@@ -175,8 +184,11 @@ void am_log_structured(const char *log_domain, enum am_log_level_flags log_level
     char buffer[1024];
     const char *format;
     void *p;
-    size_t n_fields, i;
+    size_t n_fields;
     struct am_log_field fields[16];
+
+    /* Ensure logging is setup */
+    am_call_once(&g_initialized, setup);
 
     va_start(args, log_level);
 
@@ -184,16 +196,16 @@ void am_log_structured(const char *log_domain, enum am_log_level_flags log_level
     if (log_domain)
         n_fields++;
 
-    for (p = va_arg(args, char *), i = n_fields;
-            strcmp(p, "MESSAGE") != 0 && i < 16;
-            p = va_arg(args, char *), i++) {
-        fields[i].key = p;
-        fields[i].value = va_arg(args, void *);
-        fields[i].length = -1;
+    for (p = va_arg(args, char *);
+            strcmp(p, "MESSAGE") != 0 && n_fields < 16;
+            p = va_arg(args, char *), n_fields++) {
+        fields[n_fields].key = p;
+        fields[n_fields].value = va_arg(args, void *);
+        fields[n_fields].length = -1;
     }
 
     format = va_arg(args, const char *);
-    snprintf(buffer, sizeof(buffer), format, args);
+    vsnprintf(buffer, sizeof buffer, format, args);
     buffer[1023] = '\0';
 
     fields[0].key = "MESSAGE";
@@ -216,6 +228,9 @@ void am_log_structured(const char *log_domain, enum am_log_level_flags log_level
 AM_PUBLIC
 void am_set_writer_func(am_log_writer_fn *fn, void *userdata)
 {
+    /* Ensure logging is setup */
+    am_call_once(&g_initialized, setup);
+
     assert(fn != NULL);
 
     am_mutex_lock(&g_messages_lock);
@@ -226,7 +241,59 @@ void am_set_writer_func(am_log_writer_fn *fn, void *userdata)
     am_mutex_unlock(&g_messages_lock);
 }
 
-/* #define N (((sizeof(long) * 3) + 3) + 32) */
+void am_log_structured_standard(
+        const char *log_domain,
+        enum am_log_level_flags log_level,
+        const char *file, const char *line, const char *func,
+        const char *fmt, ...)
+{
+    struct am_log_field fields[6];
+    va_list args;
+    char buffer[1024];
+    unsigned num_fields = 0;
+
+    /* Ensure logging is setup */
+    am_call_once(&g_initialized, setup);
+
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof buffer, fmt, args);
+    buffer[1023] = '\0';
+    va_end(args);
+
+    fields[num_fields].key    = "PRIORITY";
+    fields[num_fields].value  = log_level_to_priority(log_level);
+    fields[num_fields].length = -1;
+    num_fields++;
+    fields[num_fields].key    = "MESSAGE";
+    fields[num_fields].value  = buffer;
+    fields[num_fields].length = -1;
+    num_fields++;
+    if (file) {
+        fields[num_fields].key    = "CODE_FILE";
+        fields[num_fields].value  = file;
+        fields[num_fields].length = -1;
+        num_fields++;
+    }
+    if (line) {
+        fields[num_fields].key    = "CODE_LINE";
+        fields[num_fields].value  = line;
+        fields[num_fields].length = -1;
+        num_fields++;
+    }
+    if (func) {
+        fields[num_fields].key    = "CODE_FUNC";
+        fields[num_fields].value  = func;
+        fields[num_fields].length = -1;
+        num_fields++;
+    }
+    if (log_domain) {
+        fields[num_fields].key = "AM_DOMAIN";
+        fields[num_fields].value = log_domain;
+        fields[num_fields].length = -1;
+        num_fields++;
+    }
+    am_log_structured_array(log_level, fields, num_fields);
+}
 
 int am_log_writer_default(
         enum am_log_level_flags log_level,
@@ -317,16 +384,16 @@ int writer_fallback(
     for (i = 0; i < num_fields; i++) {
         const struct am_log_field *field = &fields[i];
 
-        if (strcmp(field->key, "MESSAGE") == 0 ||
-            strcmp(field->key, "MESSAGE_ID") == 0 ||
-            strcmp(field->key, "PRIORITY") == 0 ||
-            strcmp(field->key, "CODE_FILE") == 0 ||
-            strcmp(field->key, "CODE_LINE") == 0 ||
-            strcmp(field->key, "CODE_FUNC") == 0 ||
-            strcmp(field->key, "ERRNO") == 0 ||
+        if (strcmp(field->key, "MESSAGE")         == 0 ||
+            strcmp(field->key, "MESSAGE_ID")      == 0 ||
+            strcmp(field->key, "PRIORITY")        == 0 ||
+            strcmp(field->key, "CODE_FILE")       == 0 ||
+            strcmp(field->key, "CODE_LINE")       == 0 ||
+            strcmp(field->key, "CODE_FUNC")       == 0 ||
+            strcmp(field->key, "ERRNO")           == 0 ||
             strcmp(field->key, "SYSLOG_FACILITY") == 0 ||
-            strcmp(field->key, "SYSLOG_PID") == 0 ||
-            strcmp(field->key, "AM_DOMAIN") == 0)
+            strcmp(field->key, "SYSLOG_PID")      == 0 ||
+            strcmp(field->key, "AM_DOMAIN")       == 0)
         {
             fputs(field->key, stderr);
             fputs("=", stderr);
@@ -335,6 +402,7 @@ int writer_fallback(
             } else {
                 fwrite(field->value, sizeof(char), field->length, stderr);
             }
+            fputs("\n", stderr);
         }
     }
 
