@@ -1,15 +1,13 @@
 
 #define _GNU_SOURCE
-#include <stdarg.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "am/common.h"
 #include "am/threads.h"
-#include "am/macros.h"
 #include "am/logging.h"
-#include "am/utils.h"
 
 #define ANSI_RED        "\033[1;31m"
 #define ANSI_GREEN      "\033[1;32m"
@@ -23,19 +21,12 @@ static am_tss g_log_structured_depth;
 static am_log_writer_fn *g_log_writer_fn = am_log_writer_default;
 static void *g_log_writer_userdata = NULL;
 
-static am_once_flag g_initialized = AM_ONCE_FLAG_INITIALIZER;
-
-/* Cleanup the logging library */
-static
-void cleanup(void)
+static void fini(void)
 {
     am_tss_delete(g_log_structured_depth);
     am_mutex_destroy(&g_messages_lock);
 }
-
-/* Setup the logging library */
-static
-void setup(void)
+static void init(void)
 {
     int ret;
     ret = am_tss_create(&g_log_structured_depth, NULL);
@@ -48,20 +39,16 @@ void setup(void)
         abort();
     }
 
-    atexit(cleanup);
+    atexit(fini);
 }
-
-/* abort, leaving a breakpoint if @p breakpoint is true */
-static AM_NORETURN
-void log_abort(bool breakpoint)
+static void ensure_initialized(void)
 {
-    /* TODO: breakpoint */
-    (void)breakpoint;
-    abort();
+    static am_once_flag initialized = AM_ONCE_FLAG_INITIALIZER;
+
+    am_call_once(&initialized, init);
 }
 
-static AM_ATTR_RETURNS_NON_NULL
-const char *log_level_to_string(enum am_log_level_flags log_level)
+static const char *log_level_to_string(enum am_log_level_flags log_level)
 {
     if (log_level & AM_LOG_LEVEL_CRITICAL) {
         return "Critical";
@@ -80,8 +67,7 @@ const char *log_level_to_string(enum am_log_level_flags log_level)
     }
 }
 
-static AM_ATTR_RETURNS_NON_NULL
-const char *log_level_to_priority(enum am_log_level_flags log_level)
+static const char *log_level_to_priority(enum am_log_level_flags log_level)
 {
     if (log_level & AM_LOG_LEVEL_CRITICAL) {
         return "2";
@@ -101,8 +87,7 @@ const char *log_level_to_priority(enum am_log_level_flags log_level)
     }
 }
 
-static AM_ATTR_RETURNS_NON_NULL
-const char *log_level_to_color(enum am_log_level_flags log_level, bool color)
+static const char *log_level_to_color(enum am_log_level_flags log_level, bool color)
 {
     if (!color) {
         return "";
@@ -124,8 +109,7 @@ const char *log_level_to_color(enum am_log_level_flags log_level, bool color)
     }
 }
 
-static AM_ATTR_RETURNS_NON_NULL
-const char *color_reset(bool color)
+static const char *color_reset(bool color)
 {
     if (!color) {
         return "";
@@ -133,195 +117,53 @@ const char *color_reset(bool color)
     return ANSI_RESET;
 }
 
+static am_log_writer_fn writer_fallback;
+
 /****/
 
-static
-am_log_writer_fn writer_fallback;
-
-AM_PUBLIC
-void am_log_structured_array(
-        enum am_log_level_flags log_level,
-        const struct am_log_field *fields,
-        size_t num_fields)
+AM_API
+void am_log_set_writer(am_log_writer_fn *fn, void *ud)
 {
-    am_log_writer_fn *writer_func = writer_fallback;
-    void *writer_userdata = NULL;
-    unsigned depth;
-
-    /* Ensure logging is setup */
-    am_call_once(&g_initialized, setup);
-
-    if (!am_contract("amlib", AM_LOG_LEVEL_ERROR, fields != NULL))
-        return;
-    if (!am_contract("amlib", AM_LOG_LEVEL_WARNING, num_fields > 0))
-        return;
-
-    depth = (unsigned)(uintptr_t)am_tss_get(g_log_structured_depth);
-
-    if (depth == 0) {
-        am_mutex_lock(&g_messages_lock);
-        {
-            writer_func = g_log_writer_fn;
-            writer_userdata = g_log_writer_userdata;
-        }
-        am_mutex_unlock(&g_messages_lock);
+    ensure_initialized();
+    if (!fn) {
+        fn = am_log_writer_default;
+        ud = NULL;
     }
-
-    assert(writer_func != NULL);
-    am_tss_set(g_log_structured_depth, (void *)(uintptr_t)(depth + 1));
-    writer_func(log_level, fields, num_fields, writer_userdata);
-    am_tss_set(g_log_structured_depth, (void *)(uintptr_t)depth);
-
-    if (log_level & AM_LOG_FLAG_FATAL) {
-        log_abort((log_level & AM_LOG_FLAG_RECURSION) ? false : true);
-    }
-}
-
-AM_PUBLIC
-void am_log_structured(const char *log_domain, enum am_log_level_flags log_level, ...)
-{
-    va_list args;
-    char buffer[1024];
-    const char *format;
-    void *p;
-    size_t n_fields;
-    struct am_log_field fields[16];
-
-    /* Ensure logging is setup */
-    am_call_once(&g_initialized, setup);
-
-    va_start(args, log_level);
-
-    n_fields = 2;
-    if (log_domain)
-        n_fields++;
-
-    for (p = va_arg(args, char *);
-            strcmp(p, "MESSAGE") != 0 && n_fields < 16;
-            p = va_arg(args, char *), n_fields++) {
-        fields[n_fields].key = p;
-        fields[n_fields].value = va_arg(args, void *);
-        fields[n_fields].length = -1;
-    }
-
-    format = va_arg(args, const char *);
-    vsnprintf(buffer, sizeof buffer, format, args);
-    buffer[1023] = '\0';
-
-    fields[0].key = "MESSAGE";
-    fields[0].value = buffer;
-    fields[0].length = -1;
-    fields[1].key = "PRIORITY";
-    fields[1].value = log_level_to_priority(log_level);
-    fields[1].length = -1;
-    if (log_domain) {
-        fields[2].key = "AM_DOMAIN";
-        fields[2].value = log_domain;
-        fields[2].length = -1;
-    }
-
-    am_log_structured_array(log_level, fields, n_fields);
-
-    va_end(args);
-}
-
-AM_PUBLIC
-void am_set_writer_func(am_log_writer_fn *fn, void *userdata)
-{
-    /* Ensure logging is setup */
-    am_call_once(&g_initialized, setup);
-
-    assert(fn != NULL);
 
     am_mutex_lock(&g_messages_lock);
     {
         g_log_writer_fn = fn;
-        g_log_writer_userdata = userdata;
+        g_log_writer_userdata = ud;
     }
     am_mutex_unlock(&g_messages_lock);
 }
 
-void am_log_structured_standard(
-        const char *log_domain,
-        enum am_log_level_flags log_level,
-        const char *file, const char *line, const char *func,
-        const char *fmt, ...)
-{
-    struct am_log_field fields[6];
-    va_list args;
-    char buffer[1024];
-    unsigned num_fields = 0;
-
-    /* Ensure logging is setup */
-    am_call_once(&g_initialized, setup);
-
-    va_start(args, fmt);
-    vsnprintf(buffer, sizeof buffer, fmt, args);
-    buffer[1023] = '\0';
-    va_end(args);
-
-    fields[num_fields].key    = "PRIORITY";
-    fields[num_fields].value  = log_level_to_priority(log_level);
-    fields[num_fields].length = -1;
-    num_fields++;
-    fields[num_fields].key    = "MESSAGE";
-    fields[num_fields].value  = buffer;
-    fields[num_fields].length = -1;
-    num_fields++;
-    if (file) {
-        fields[num_fields].key    = "CODE_FILE";
-        fields[num_fields].value  = file;
-        fields[num_fields].length = -1;
-        num_fields++;
-    }
-    if (line) {
-        fields[num_fields].key    = "CODE_LINE";
-        fields[num_fields].value  = line;
-        fields[num_fields].length = -1;
-        num_fields++;
-    }
-    if (func) {
-        fields[num_fields].key    = "CODE_FUNC";
-        fields[num_fields].value  = func;
-        fields[num_fields].length = -1;
-        num_fields++;
-    }
-    if (log_domain) {
-        fields[num_fields].key = "AM_DOMAIN";
-        fields[num_fields].value = log_domain;
-        fields[num_fields].length = -1;
-        num_fields++;
-    }
-    am_log_structured_array(log_level, fields, num_fields);
-}
-
+AM_API
 int am_log_writer_default(
         enum am_log_level_flags log_level,
         const struct am_log_field *fields,
         size_t num_fields,
-        void *userdata)
+        void *ud)
 {
     size_t i;
     const char *message = NULL;
     const char *domain = NULL;
-    const char *progname = am_progname();
     int message_len = 0;
     int domain_len = 0;
     bool color = true;
     char time_buf[128];
-    struct timespec ts;
+    time_t now_time;
     struct tm *now_tm;
 
-    (void)userdata;
+    (void)ud;
 
-    /* Search for "MESSAGE" and "AM_DOMAIN" fields */
     for (i = 0; (message == NULL || domain == NULL) && i < num_fields; i++) {
         const struct am_log_field *field = &fields[i];
         if (strcmp(field->key, "MESSAGE") == 0) {
             message = field->value;
             message_len = field->length;
         }
-        if (strcmp(field->key, "AM_DOMAIN") == 0) {
+        if (strcmp(field->key, "AMLIB_DOMAIN") == 0) {
             domain = field->value;
             domain_len = field->length;
         }
@@ -334,29 +176,21 @@ int am_log_writer_default(
         domain_len = strlen(domain);
     }
 
-    /* Print process info */
-    fprintf(stderr, "(%s:%d): ", progname ? progname : "process", am_getpid());
-    /* Print domain */
     if (domain) {
         fwrite(domain, sizeof(char), domain_len, stderr);
-        /* fputs(domain, stderr); */
         fputs("-", stderr);
     }
-    /* Print colored log level */
     fprintf(stderr, "%s%s%s: ",
             log_level_to_color(log_level, color),
             log_level_to_string(log_level),
             color_reset(color));
-    /* Print timestamp */
-    am_gettimeofday(&ts);
-    now_tm = localtime(&ts.tv_sec);
+    time(&now_time);
+    now_tm = localtime(&now_time);
     strftime(time_buf, sizeof time_buf, "%H:%M:%S", now_tm);
-    fprintf(stderr, "%s%s.%03d%s: ",
+    fprintf(stderr, "%s%s%s\n",
             color ? ANSI_LIGHT_BLUE : "",
             time_buf,
-            (int)((ts.tv_nsec / 1000) % 1000),
             color_reset(color));
-    /* Print message */
     if (message) {
         fwrite(message, sizeof(char), message_len, stderr);
     } else {
@@ -368,10 +202,8 @@ int am_log_writer_default(
     return AM_LOG_WRITER_HANDLED;
 }
 
-
 /* Fallback writer if logging occurs while calling writer function (oops) */
-static
-int writer_fallback(
+static int writer_fallback(
         enum am_log_level_flags log_level,
         const struct am_log_field *fields,
         size_t num_fields,
@@ -393,7 +225,7 @@ int writer_fallback(
             strcmp(field->key, "ERRNO")           == 0 ||
             strcmp(field->key, "SYSLOG_FACILITY") == 0 ||
             strcmp(field->key, "SYSLOG_PID")      == 0 ||
-            strcmp(field->key, "AM_DOMAIN")       == 0)
+            strcmp(field->key, "AMLIB_DOMAIN")    == 0)
         {
             fputs(field->key, stderr);
             fputs("=", stderr);
@@ -406,7 +238,87 @@ int writer_fallback(
         }
     }
 
-    fprintf(stderr, "_PID=%d", (int)am_getpid());
+    /* fprintf(stderr, "_PID=%d", (int)am_getpid()); */
     return AM_LOG_WRITER_HANDLED;
+}
+
+AM_API void am_log(enum am_log_level_flags log_level, ...)
+{
+    va_list args;
+    va_start(args, log_level);
+    am_logv(log_level, args);
+    va_end(args);
+}
+
+AM_API void am_logv(enum am_log_level_flags log_level, va_list args)
+{
+    char msg_buffer[1024];
+    size_t n_fields;
+    struct am_log_field fields[16];
+    const char *p;
+    const char *format;
+
+    ensure_initialized();
+
+    n_fields = 2;
+    for (p = va_arg(args, const char *);
+            strcmp(p, "MESSAGE") != 0 && n_fields < 16;
+            p = va_arg(args, const char *), n_fields++) {
+        fields[n_fields].key = p;
+        fields[n_fields].value = va_arg(args, const void *);
+        fields[n_fields].length = -1;
+    }
+
+    format = va_arg(args, const char *);
+    vsnprintf(msg_buffer, sizeof msg_buffer, format, args);
+    msg_buffer[sizeof msg_buffer - 1] = '\0';
+
+    fields[0].key = "MESSAGE";
+    fields[0].value = msg_buffer;
+    fields[0].length = -1;
+
+    fields[1].key = "PRIORITY";
+    fields[1].value = log_level_to_priority(log_level);
+    fields[1].length = -1;
+
+    am_log_array(log_level, fields, n_fields);
+
+    va_end(args);
+}
+
+AM_API void am_log_array(
+        enum am_log_level_flags log_level,
+        const struct am_log_field *fields,
+        size_t num_fields)
+{
+    am_log_writer_fn *writer_func = writer_fallback;
+    void *writer_ud = NULL;
+    unsigned depth;
+
+    ensure_initialized();
+
+    if (!am_contract("amlib", AM_LOG_LEVEL_ERROR, fields != NULL))
+        return;
+    if (!am_contract("amlib", AM_LOG_LEVEL_ERROR, num_fields > 0))
+        return;
+
+    depth = (unsigned)(uintptr_t)am_tss_get(g_log_structured_depth);
+
+    if (depth == 0) {
+        am_mutex_lock(&g_messages_lock);
+        {
+            writer_func = g_log_writer_fn;
+            writer_ud = g_log_writer_userdata;
+        }
+        am_mutex_unlock(&g_messages_lock);
+    }
+
+    am_tss_set(g_log_structured_depth, (void *)(uintptr_t)(depth + 1));
+    writer_func(log_level, fields, num_fields, writer_ud);
+    am_tss_set(g_log_structured_depth, (void *)(uintptr_t)depth);
+
+    if (log_level & AM_LOG_FLAG_FATAL) {
+        abort();
+    }
 }
 

@@ -1,11 +1,19 @@
+/** @file am/logging.h
+ * @brief Logging interface
+ *
+ * The recommended fields:
+ * AMLIB_DOMAIN - the domain of the logging. "amlib" for amlib functions.
+ * MESSAGE - The human-readable message string.
+ * MESSAGE_ID - 128-bit identifier. Created using `systemd-id128 new`.
+ * PRIORITY - Syslog priority value. Set automatically by logging functions based on log level.
+ * CODE_FILE, CODE_LINE, CODE_FUNC - Source code info.
+ * ERRNO - value of `errno`.
+ */
 
 #ifndef AM_LOGGING_H
 #define AM_LOGGING_H 1
 
-#include <stdint.h>
-#include <stdarg.h>
-#include <inttypes.h>
-#include "am/macros.h"
+#include "am/common.h"
 
 enum am_log_level_flags {
     /* Log flags */
@@ -27,122 +35,69 @@ enum am_log_level_flags {
 #define AM_LOG_WRITER_HANDLED   1
 #define AM_LOG_WRITER_UNHANDLED 0
 
+/** @brief Data field to be logged */
 struct am_log_field {
     const char *key;
     const void *value;
     intptr_t length; /* length of value, or -1 if null-terminated */
 };
 
+/** @brief Function type for handling log events */
 typedef int am_log_writer_fn(
         enum am_log_level_flags log_level,
         const struct am_log_field *fields,
         size_t num_fields,
         void *userdata);
 
-AM_PUBLIC
-void am_log_structured(const char *log_domain, enum am_log_level_flags log_level, ...);
-AM_PUBLIC
-void am_log_structured_array(enum am_log_level_flags log_level, const struct am_log_field *fields, size_t num_fields);
-AM_PUBLIC AM_ATTR_PRINTF(6, 7)
-void am_log_structured_standard(
-        const char *log_domain,
+/** @brief Emit a log event
+ * @param log_level The severity level
+ * @param ... Logging field names and values.
+ * @note If the "MESSAGE" field is provided, it must be the final field. The
+ * following arguments are passed to `sprintf` with a 2048-byte buffer.
+ */
+AM_API void am_log(
         enum am_log_level_flags log_level,
-        const char *file, const char *line, const char *func,
-        const char *fmt, ...);
+        ...);
+/** @brief Emit a log event
+ * @param log_level The severity level
+ * @param args Logging field names and values.
+ * @note If the "MESSAGE" field is provided, it must be the final field. The
+ * following arguments are passed to `sprintf` with a 1024-byte buffer.
+ */
+AM_API void am_logv(
+        enum am_log_level_flags log_level,
+        va_list args);
+/** @brief Emit a log event
+ * @param log_level The severity level
+ * @param fields Logging fields
+ * @param num_fields The number of fields
+ */
+AM_API void am_log_array(
+        enum am_log_level_flags log_level,
+        const struct am_log_field *fields,
+        size_t num_fields);
 
-AM_PUBLIC
-void am_set_writer_func(am_log_writer_fn *fn, void *userdata);
-AM_PUBLIC
-am_log_writer_fn am_log_writer_default;
+/** @brief Set the log writer function
+ * @param fn The writer function. If `NULL`, set to the default.
+ * @param userdata The writer function userdata
+ */
+AM_API void am_log_set_writer(am_log_writer_fn *fn, void *userdata);
+/** @brief The default writer function, writes to `stderr`  */
+AM_API am_log_writer_fn am_log_writer_default;
 
-#define AM_DEBUG_HERE() \
-    am_log_structured(NULL, AM_LOG_LEVEL_DEBUG, \
-            "CODE_FILE", __FILE__, \
-            "CODE_LINE", AM_STRINGIFY(__LINE__), \
-            "CODE_FUNC", AM_STRFUNC, \
-            "MESSAGE", "%s", AM_STRLOC)
+#define AM_LOG_STD_FLDS                  \
+    "CODE_FILE", __FILE__,               \
+    "CODE_LINE", AM_STRINGIFY(__LINE__), \
+    "CODE_FUNC", AM_STRFUNC
 
-#  define am_contract(domain, level, expr) \
-    ((expr) ? true : (am_log_structured_standard( \
-            domain, level, \
-            __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-            "%s: contract violation: \"%s\"", AM_STRFUNC, #expr), false))
+#define AM_DEBUG_HERE()                               \
+    am_log(NULL, AM_LOG_LEVEL_DEBUG,                  \
+            AM_LOG_STD_FLDS                           \
+            "MESSAGE", "AM_DEBUG_HERE(): " AM_STRLOC)
 
-#if AM_HAS_VARIADIC_MACROS == 1
-AM_DIAGNOSTIC_PUSH
-AM_DIAGNOSTIC_IGNORE_VARIADIC_MACROS
-#  define am_log(dom, lvl, ...) \
-    am_log_structured_standard( \
-            dom, lvl, \
-            __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-            __VA_ARGS__)
-#  define am_error(...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_ERROR, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             __VA_ARGS__)
-#  define am_notice(...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_NOTICE, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             __VA_ARGS__)
-#  define am_critical(...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_CRITICAL | AM_LOG_FLAG_FATAL, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             __VA_ARGS__)
-#  define am_warning(...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_WARNING, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             __VA_ARGS__)
-#  define am_info(...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_INFO, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             __VA_ARGS__)
-#  define am_debug(...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_DEBUG, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             __VA_ARGS__)
-AM_DIAGNOSTIC_POP
-#elif AM_HAS_VARIADIC_MACROS == 2
-AM_DIAGNOSTIC_PUSH
-AM_DIAGNOSTIC_IGNORE_VARIADIC_MACROS
-#  define am_error(fmt...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_ERROR, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             fmt)
-#  define am_notice(fmt...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_NOTICE, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             fmt)
-#  define am_critical(fmt, ...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_CRITICAL | AM_LOG_FLAG_FATAL, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             fmt)
-#  define am_warning(fmt, ...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_WARNING, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             fmt)
-#  define am_info(fmt, ...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_INFO, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             fmt)
-#  define am_debug(fmt, ...) \
-    am_log_structured_standard( \
-            NULL, AM_LOG_LEVEL_DEBUG, \
-             __FILE__, AM_STRINGIFY(__LINE__), AM_STRFUNC, \
-             fmt)
-AM_DIAGNOSTIC_POP
-#else
-#  error NYI
-#endif
+#define am_contract(domain, level, expr) \
+    ((expr) \
+     ? true \
+     : (am_log(level, AM_LOG_STD_FLDS, "AMLIB_DOMAIN", domain, "MESSAGE", "%s: contract violation: \"%s\"", AM_STRFUNC, #expr), false))
 
 #endif /* ifndef AM_LOGGING_H */

@@ -1,0 +1,92 @@
+\hypertarget{threads_8h}{}\doxysection{threads.\+h File Reference}
+\label{threads_8h}\index{threads.h@{threads.h}}
+
+
+Portable threads implementation.  
+
+
+{\ttfamily \#include $<$errno.\+h$>$}\newline
+{\ttfamily \#include $<$pthread.\+h$>$}\newline
+{\ttfamily \#include $<$sched.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}am/common.\+h\char`\"{}}\newline
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{threads_8h_a369266c24eacffb87046522897a570d5}\label{threads_8h_a369266c24eacffb87046522897a570d5}} 
+\#define {\bfseries \+\_\+\+G\+N\+U\+\_\+\+S\+O\+U\+R\+CE}
+\item 
+\mbox{\Hypertarget{threads_8h_af7578d6319364fa1f61adebca1b61b7c}\label{threads_8h_af7578d6319364fa1f61adebca1b61b7c}} 
+\#define {\bfseries A\+M\+\_\+\+O\+N\+C\+E\+\_\+\+F\+L\+A\+G\+\_\+\+I\+N\+I\+T\+I\+A\+L\+I\+Z\+ER}~P\+T\+H\+R\+E\+A\+D\+\_\+\+O\+N\+C\+E\+\_\+\+I\+N\+IT
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{threads_8h_a3e474616e1f8103f541870ade69f100c}\label{threads_8h_a3e474616e1f8103f541870ade69f100c}} 
+typedef pthread\+\_\+t {\bfseries am\+\_\+thread}
+\item 
+\mbox{\Hypertarget{threads_8h_abcbfa06d46b4bb2f6444896888a9a0cf}\label{threads_8h_abcbfa06d46b4bb2f6444896888a9a0cf}} 
+typedef pthread\+\_\+mutex\+\_\+t {\bfseries am\+\_\+mutex}
+\item 
+\mbox{\Hypertarget{threads_8h_afb1e9583c3fbf037805400bf209c5cd3}\label{threads_8h_afb1e9583c3fbf037805400bf209c5cd3}} 
+typedef pthread\+\_\+cond\+\_\+t {\bfseries am\+\_\+cond}
+\item 
+\mbox{\Hypertarget{threads_8h_ac7e46d534189ce83864094e390ebb198}\label{threads_8h_ac7e46d534189ce83864094e390ebb198}} 
+typedef pthread\+\_\+key\+\_\+t {\bfseries am\+\_\+tss}
+\item 
+\mbox{\Hypertarget{threads_8h_a63b44b82c06451c20012164665f30938}\label{threads_8h_a63b44b82c06451c20012164665f30938}} 
+typedef pthread\+\_\+spinlock\+\_\+t {\bfseries am\+\_\+spinlock}
+\item 
+\mbox{\Hypertarget{threads_8h_acab4eb24f941d819c8d9870bdb12e12e}\label{threads_8h_acab4eb24f941d819c8d9870bdb12e12e}} 
+typedef pthread\+\_\+once\+\_\+t {\bfseries am\+\_\+once\+\_\+flag}
+\item 
+\mbox{\Hypertarget{threads_8h_af1deabf69b346d0c89d842a459cd6246}\label{threads_8h_af1deabf69b346d0c89d842a459cd6246}} 
+typedef int($\ast$ {\bfseries am\+\_\+thread\+\_\+fn}) (void $\ast$)
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7}{am\+\_\+mutex\+\_\+type}} \{ \mbox{\hyperlink{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7a886461dc0ef1e5a7953e7c1a45d87b1c}{A\+M\+\_\+\+M\+U\+T\+E\+X\+\_\+\+P\+L\+A\+IN}} = 0, 
+\mbox{\hyperlink{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7a34f5d7b81cac440c142071b37d89ce59}{A\+M\+\_\+\+M\+U\+T\+E\+X\+\_\+\+T\+I\+M\+ED}} = 1, 
+\mbox{\hyperlink{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7a7e9be57c1041f83a38b346226f094701}{A\+M\+\_\+\+M\+U\+T\+E\+X\+\_\+\+R\+E\+C\+U\+R\+S\+I\+VE}} = 2
+ \}
+\item 
+\mbox{\Hypertarget{threads_8h_a9213f941e1bf156cc8e145594c0b3347}\label{threads_8h_a9213f941e1bf156cc8e145594c0b3347}} 
+enum {\bfseries am\+\_\+thread\+\_\+error} \{ \newline
+{\bfseries A\+M\+\_\+\+T\+H\+R\+E\+A\+D\+\_\+\+S\+U\+C\+C\+E\+SS} = 0, 
+{\bfseries A\+M\+\_\+\+T\+H\+R\+E\+A\+D\+\_\+\+T\+I\+M\+E\+D\+O\+UT} = 1, 
+{\bfseries A\+M\+\_\+\+T\+H\+R\+E\+A\+D\+\_\+\+B\+U\+SY} = 2, 
+{\bfseries A\+M\+\_\+\+T\+H\+R\+E\+A\+D\+\_\+\+E\+R\+R\+OR} = 3, 
+\newline
+{\bfseries A\+M\+\_\+\+T\+H\+R\+E\+A\+D\+\_\+\+N\+O\+M\+EM} = 4
+ \}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Portable threads implementation. 
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7}\label{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7}} 
+\index{threads.h@{threads.h}!am\_mutex\_type@{am\_mutex\_type}}
+\index{am\_mutex\_type@{am\_mutex\_type}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{am\_mutex\_type}{am\_mutex\_type}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7}{am\+\_\+mutex\+\_\+type}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{AM\_MUTEX\_PLAIN@{AM\_MUTEX\_PLAIN}!threads.h@{threads.h}}\index{threads.h@{threads.h}!AM\_MUTEX\_PLAIN@{AM\_MUTEX\_PLAIN}}}\mbox{\Hypertarget{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7a886461dc0ef1e5a7953e7c1a45d87b1c}\label{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7a886461dc0ef1e5a7953e7c1a45d87b1c}} 
+A\+M\+\_\+\+M\+U\+T\+E\+X\+\_\+\+P\+L\+A\+IN&Simple, non-\/recursive mutex ~\newline
+ \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{AM\_MUTEX\_TIMED@{AM\_MUTEX\_TIMED}!threads.h@{threads.h}}\index{threads.h@{threads.h}!AM\_MUTEX\_TIMED@{AM\_MUTEX\_TIMED}}}\mbox{\Hypertarget{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7a34f5d7b81cac440c142071b37d89ce59}\label{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7a34f5d7b81cac440c142071b37d89ce59}} 
+A\+M\+\_\+\+M\+U\+T\+E\+X\+\_\+\+T\+I\+M\+ED&Non-\/recursive mutex, supports timeout \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{AM\_MUTEX\_RECURSIVE@{AM\_MUTEX\_RECURSIVE}!threads.h@{threads.h}}\index{threads.h@{threads.h}!AM\_MUTEX\_RECURSIVE@{AM\_MUTEX\_RECURSIVE}}}\mbox{\Hypertarget{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7a7e9be57c1041f83a38b346226f094701}\label{threads_8h_a183a6c610cb5b41b9374b66c576a8ea7a7e9be57c1041f83a38b346226f094701}} 
+A\+M\+\_\+\+M\+U\+T\+E\+X\+\_\+\+R\+E\+C\+U\+R\+S\+I\+VE&Recursive mutex ~\newline
+ \\
+\hline
+
+\end{DoxyEnumFields}

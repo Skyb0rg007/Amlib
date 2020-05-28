@@ -1,0 +1,919 @@
+\hypertarget{common_8h}{}\doxysection{common.\+h File Reference}
+\label{common_8h}\index{common.h@{common.h}}
+
+
+Common macros and definitions.  
+
+
+{\ttfamily \#include $<$float.\+h$>$}\newline
+{\ttfamily \#include $<$iso646.\+h$>$}\newline
+{\ttfamily \#include $<$limits.\+h$>$}\newline
+{\ttfamily \#include $<$stdarg.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{common_8h_ae9b5e13d6e2112dd9bc092f1dd8e5aff}{A\+M\+\_\+\+S\+T\+R\+I\+N\+G\+I\+FY}}(x)
+\begin{DoxyCompactList}\small\item\em Convert a symbol into a string, expanding macros. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_ac6563b32b2c34001a20f8a03067912c5}{A\+M\+\_\+\+C\+O\+N\+C\+AT}}(a,  b)
+\begin{DoxyCompactList}\small\item\em Concatenate two symbols, expanding macros. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a0c204d55ccbd4a1730ffce55e283c263}{A\+M\+\_\+\+M\+AX}}(a,  b)~((a) $>$ (b) ? (a) \+: (b))
+\begin{DoxyCompactList}\small\item\em Numerical maximum. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a63280b0f62113483cc3a5f8e6d44a5ea}{A\+M\+\_\+\+M\+IN}}(a,  b)~((a) $<$ (b) ? (a) \+: (b))
+\begin{DoxyCompactList}\small\item\em Numerical minimum. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a22b5bf911892cf1625862e5583b054c2}{A\+M\+\_\+\+A\+BS}}(a)~((a) $<$ 0 ? -\/(a) \+: (a))
+\begin{DoxyCompactList}\small\item\em Absolute value. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a325c5378831d0f58aedc998e15b50011}{A\+M\+\_\+\+C\+L\+A\+MP}}(x,  low,  high)~(\mbox{\hyperlink{common_8h_a0c204d55ccbd4a1730ffce55e283c263}{A\+M\+\_\+\+M\+AX}}(low, (\mbox{\hyperlink{common_8h_a63280b0f62113483cc3a5f8e6d44a5ea}{A\+M\+\_\+\+M\+IN}}(x, high))))
+\begin{DoxyCompactList}\small\item\em Clamp a number between two values. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_abf8d60f6f4ebacb7c1d9c49663687731}{A\+M\+\_\+\+A\+P\+P\+R\+O\+X\+\_\+\+E\+Q\+U\+AL}}(a,  b,  epsilon)~(\mbox{\hyperlink{common_8h_a22b5bf911892cf1625862e5583b054c2}{A\+M\+\_\+\+A\+BS}}((a) -\/ (b)) $<$ (epsilon))
+\begin{DoxyCompactList}\small\item\em Determine if two numbers are within {\ttfamily epsilon} of another. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_abfb05fd817117781874fd7946b39d9c9}{A\+M\+\_\+\+C\+O\+N\+T\+A\+I\+N\+E\+R\+\_\+\+OF}}(ptr,  type,  member)~((type $\ast$)((char $\ast$)(ptr) -\/ offsetof(type, member)))
+\begin{DoxyCompactList}\small\item\em Access the parent structure given an internal member. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a08ed50d43f27eeb123ff051c756d86aa}{A\+M\+\_\+\+A\+L\+I\+G\+N\+O\+F\+\_\+\+T\+Y\+PE}}(type)~offsetof(struct \{ char \+\_\+a; type \+\_\+b; \}, \+\_\+b)
+\begin{DoxyCompactList}\small\item\em Determine the alignment of a given type. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a82b45b4442c02c67567273bad90a7d91}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+E\+N\+C\+O\+DE}}(major,  minor,  patch)~(((major) $\ast$ 1000000) + ((minor) $\ast$ 1000) + (patch))
+\begin{DoxyCompactList}\small\item\em Convert major.\+minor.\+patch version into a comparable number. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a71f18779f8e0515522e944c61204087e}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+D\+E\+C\+O\+D\+E\+\_\+\+M\+A\+J\+OR}}(vsn)~((vsn) / 1000000)
+\begin{DoxyCompactList}\small\item\em Extract the major version. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a19e676c10655be5aba9b86cae3dad796}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+D\+E\+C\+O\+D\+E\+\_\+\+M\+I\+N\+OR}}(vsn)~(((vsn) \% 1000000) / 1000)
+\begin{DoxyCompactList}\small\item\em Extract the minor version. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_ac25b805e44140be5fd3ca3e3aad27a0d}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+D\+E\+C\+O\+D\+E\+\_\+\+P\+A\+T\+CH}}(vsn)~((vsn) \% 1000)
+\begin{DoxyCompactList}\small\item\em Extract the patch version. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_ae0bb0d896ea15664b670ff0047d79161}{A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C89}}
+\begin{DoxyCompactList}\small\item\em Synonym for \mbox{\hyperlink{common_8h_a98c2de295716ca9c36d652c249ecf1a9}{A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C90}}. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a98c2de295716ca9c36d652c249ecf1a9}{A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C90}}
+\begin{DoxyCompactList}\small\item\em True if the compiler supports C90. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a1c26ef664ef99b75aa5feb6bb72e639c}{A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C94}}
+\begin{DoxyCompactList}\small\item\em Synonym for \mbox{\hyperlink{common_8h_adbbc305867f21d451d16e569e976474f}{A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C95}}. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_adbbc305867f21d451d16e569e976474f}{A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C95}}
+\begin{DoxyCompactList}\small\item\em True if the compiler supports C95. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a0dfd360d1eff370c3ea93f522501d66a}{A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C99}}
+\begin{DoxyCompactList}\small\item\em True if the compiler supports C99. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a29a14a9c2d11e2cc522b455cd3fe4fc6}{A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C11}}
+\begin{DoxyCompactList}\small\item\em True if the compiler supports C11. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a81de061abe395e5016c725ba9cfe2f5a}{A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C17}}
+\begin{DoxyCompactList}\small\item\em True if the compiler supports C17. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_ab078b1503a67eac322d5f816e8eecd00}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+S\+T\+DC}}(vsn)
+\begin{DoxyCompactList}\small\item\em Determine if compiling under a given version of the C standard. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a90cbcafa9b2128573d9b71e9561741e2}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+G\+N\+UC}}(major,  minor,  patch)
+\begin{DoxyCompactList}\small\item\em Determine if compiling with at least a given version of G\+N\+UC. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a03eb9ad319afb9b54cac5f33ba418cd5}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+M\+S\+VC}}(major,  minor,  patch)
+\begin{DoxyCompactList}\small\item\em Determine if compiling with at least a given version of M\+S\+VC. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a2b6b5bc76b9d7c252e12317421d9d67a}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+I\+N\+T\+EL}}(major,  minor,  patch)
+\begin{DoxyCompactList}\small\item\em Determine if compiling with at least a given version of I\+CC. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_af6598da6a5fbfdba269c59fe4b9d4b8a}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+P\+GI}}(major,  minor,  patch)
+\begin{DoxyCompactList}\small\item\em Determine if compiling with at least a given version of P\+GI. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a54e3830b97f5ba896e106cd57b6668b9}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+C\+L\+A\+NG}}(major,  minor,  patch)
+\begin{DoxyCompactList}\small\item\em Determine if compiling with at least a given version of Clang. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a621f546a676d615a25258cefd6e8bfb6}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+E\+M\+S\+C\+R\+I\+P\+T\+EN}}(major,  minor,  patch)
+\begin{DoxyCompactList}\small\item\em Determine if compiling with at least a given version of Emscripten. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_ae81a089d3158ee2f4fa101e00d72447a}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+T\+I\+N\+YC}}(major,  minor,  patch)
+\begin{DoxyCompactList}\small\item\em Determine if compiling with at least a given version of TinyC. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a757e69ffc163125af4df3ed2f177b9a1}{A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+G\+CC}}(major,  minor,  patch)
+\begin{DoxyCompactList}\small\item\em Determine if compiling with at least a given version of G\+CC. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_ac1bf525d39d356f6935aec66bb0f2dc6}{A\+M\+\_\+\+H\+A\+S\+\_\+\+A\+T\+T\+R\+I\+B\+U\+TE}}(attr)
+\begin{DoxyCompactList}\small\item\em Determine if Clang supports a given G\+N\+U-\/style attribute. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_afebdd3652b10370b8f1bc2cb2975cfa6}{A\+M\+\_\+\+H\+A\+S\+\_\+\+B\+U\+I\+L\+T\+IN}}(attr)
+\begin{DoxyCompactList}\small\item\em Determine if Clang supports a given \+\_\+\+\_\+builtin\+\_\+$\ast$ function. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_ad2c6d2fd71153104ae8c48e3aad6ade4}{A\+M\+\_\+\+H\+A\+S\+\_\+\+E\+X\+T\+E\+N\+S\+I\+ON}}(attr)
+\begin{DoxyCompactList}\small\item\em Determine if Clang supports a given language extension. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a5ac78d76c9f155cee1cd884015b1ed3d}{A\+M\+\_\+\+H\+A\+S\+\_\+\+F\+E\+A\+T\+U\+RE}}(attr)
+\begin{DoxyCompactList}\small\item\em Determine if Clang supports a given language feature. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a1a7940438c7d61872642b95857224a01}{A\+M\+\_\+\+L\+I\+K\+E\+LY}}(expr)
+\begin{DoxyCompactList}\small\item\em Marks the expression as likely to evaluate to true. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a7ce81b75d3b48576716350bda459f1de}{A\+M\+\_\+\+U\+N\+L\+I\+K\+E\+LY}}(expr)
+\begin{DoxyCompactList}\small\item\em Marks the expression as unlikely to evaluate to true. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_aff9c99dd6da473fca402f170a2439d80}{A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+M\+A\+L\+L\+OC}}
+\begin{DoxyCompactList}\small\item\em Function attribute signaling {\ttfamily malloc}-\/like behavior. Any non-\/null pointer returned by such a function does not alias with any other pointer, and the data pointed to doesn\textquotesingle{}t contain valid pointers. Example\+: {\ttfamily malloc}. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_aacaac19e0467e19f78579ba9208e121d}{A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+P\+U\+RE}}
+\begin{DoxyCompactList}\small\item\em Function attribute signaling a pure function. A pure function\textquotesingle{}s return value depends only on its parameters, globals, and pointer dereferences A call of a pure function can be optimized-\/out. Example\+: {\ttfamily strlen}. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_adeaeeca7e789554fcbb5d5182245905d}{A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+C\+O\+N\+ST}}
+\begin{DoxyCompactList}\small\item\em Function attribute signaling a const function. A const function\textquotesingle{}s return value depends only on its parameters A call of a const function can be optimized-\/out, or re-\/ordered. Example\+: {\ttfamily round}. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a559549d069acba2e4b5ad9a55b6e5769}{A\+M\+\_\+\+R\+E\+S\+T\+R\+I\+CT}}
+\begin{DoxyCompactList}\small\item\em Pointer attribute signaling a non-\/aliasing pointer. During execution of a block, if an object accessible through a restricted pointer is modified, that object must be read/written exclusively via that pointer. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a1a675f4df38fa98c9df9502835d6ce81}{A\+M\+\_\+\+I\+N\+L\+I\+NE}}
+\begin{DoxyCompactList}\small\item\em Function qualifier that suggests the compiler inline it if possible. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a202d6122ff44336125c91148c8075edd}{A\+M\+\_\+\+A\+L\+W\+A\+Y\+S\+\_\+\+I\+N\+L\+I\+NE}}
+\begin{DoxyCompactList}\small\item\em Function qualifier that suggests the compiler inline it if possible This qualifier is more aggressive that \mbox{\hyperlink{common_8h_a1a675f4df38fa98c9df9502835d6ce81}{A\+M\+\_\+\+I\+N\+L\+I\+NE}}, but does not always guarentee inlining. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a923b774312cd1c6f9654e65e07188b37}{A\+M\+\_\+\+N\+E\+V\+E\+R\+\_\+\+I\+N\+L\+I\+NE}}
+\begin{DoxyCompactList}\small\item\em Function qualifier that suggests the compiler not inline it. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_ae8270471fc899fce9514b2fd4ae19561}{A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+N\+O\+N\+N\+U\+LL}}(args)
+\begin{DoxyCompactList}\small\item\em Function attribute that signals arguments must not be null. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_ac65fcc5a2c5820236dc931189330f227}{A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+P\+R\+I\+N\+TF}}(string\+\_\+idx,  first\+\_\+to\+\_\+check)
+\item 
+\mbox{\Hypertarget{common_8h_a76dae13bd4ac9fd653dabd7f34bfbc1b}\label{common_8h_a76dae13bd4ac9fd653dabd7f34bfbc1b}} 
+\#define {\bfseries A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+U\+N\+U\+S\+ED}
+\item 
+\#define \mbox{\hyperlink{common_8h_ab5b350a9306c984144c32227527a06ac}{A\+M\+\_\+\+P\+R\+A\+G\+MA}}(p)
+\begin{DoxyCompactList}\small\item\em Insert a pragma as an expression. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a0d739ec04360d76b43530cc3878d6a55}{A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+W\+A\+R\+N\+\_\+\+U\+N\+U\+S\+E\+D\+\_\+\+R\+E\+S\+U\+LT}}
+\begin{DoxyCompactList}\small\item\em Function attribute that signals the function\textquotesingle{}s return value should be inspected. Good example of such a function is {\ttfamily realloc}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{common_8h_a96337e6cbfb7fdbe6be3a9f7f17750b0}\label{common_8h_a96337e6cbfb7fdbe6be3a9f7f17750b0}} 
+\#define {\bfseries A\+M\+\_\+\+N\+O\+R\+E\+T\+U\+RN}
+\item 
+\#define \mbox{\hyperlink{common_8h_afd6ff71829be7220581bdd4364e16711}{A\+M\+\_\+\+A\+S\+S\+U\+ME}}(expr)~((void)(expr))
+\begin{DoxyCompactList}\small\item\em Compiler can safely assume the expression is true. UB if false. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a3ad5a1b4274503312f3345968c93c329}{A\+M\+\_\+\+U\+N\+R\+E\+A\+C\+H\+A\+B\+LE}}()~((void)0)
+\begin{DoxyCompactList}\small\item\em Signals the expression is unreachable. UB if control flow reaches here. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a2ec2bea3a041c69569a2145d3b9a10c5}{A\+M\+\_\+\+P\+R\+I\+V\+A\+TE}}
+\begin{DoxyCompactList}\small\item\em Visibility attribute for symbols internal to the current shared library. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_aeea77f2723ec2e92aa656d7d599da43e}{A\+M\+\_\+\+P\+U\+B\+L\+IC}}
+\begin{DoxyCompactList}\small\item\em Visibility attribute for symbols exported from the current shared library. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a8f84a559fe6738e52d279572f19a4a80}{A\+M\+\_\+\+I\+M\+P\+O\+RT}}~extern
+\begin{DoxyCompactList}\small\item\em Visibility attribute for symbols imported from an external shared library. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a1be97a61cec3907209dd50318503d9d8}{A\+M\+\_\+\+S\+T\+A\+T\+I\+C\+\_\+\+A\+S\+S\+E\+RT}}(expr,  message)~typedef char \mbox{\hyperlink{common_8h_ac6563b32b2c34001a20f8a03067912c5}{A\+M\+\_\+\+C\+O\+N\+C\+AT}}(am\+\_\+static\+\_\+assert\+\_\+, \+\_\+\+\_\+\+L\+I\+N\+E\+\_\+\+\_\+)\mbox{[}(expr) ? 1 \+: -\/1\mbox{]}
+\item 
+\mbox{\Hypertarget{common_8h_ae4755d840f28478a39a74ac1ffd00ab8}\label{common_8h_ae4755d840f28478a39a74ac1ffd00ab8}} 
+\#define {\bfseries A\+M\+\_\+\+F\+A\+L\+L\+T\+H\+R\+O\+U\+GH}~/$\ast$ fallthrough $\ast$/
+\item 
+\mbox{\Hypertarget{common_8h_ac24163096d55938f99f0d843c2ecf39e}\label{common_8h_ac24163096d55938f99f0d843c2ecf39e}} 
+\#define {\bfseries A\+M\+\_\+\+I\+S\+\_\+\+C\+O\+N\+S\+T\+E\+X\+PR}(expr)~(0)
+\item 
+\#define \mbox{\hyperlink{common_8h_acee1f56800f8e80f25d12b4841ba99df}{A\+M\+\_\+\+S\+T\+R\+F\+U\+NC}}~((const char $\ast$)(\char`\"{}???\char`\"{}))
+\begin{DoxyCompactList}\small\item\em A {\ttfamily const char $\ast$} pointer to the name of the current function. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a55c1f1e9e093d6833d8db2b2a1a1b629}{A\+M\+\_\+\+S\+T\+R\+L\+OC}}~\+\_\+\+\_\+\+F\+I\+L\+E\+\_\+\+\_\+ \char`\"{}\+:\char`\"{} \mbox{\hyperlink{common_8h_ae9b5e13d6e2112dd9bc092f1dd8e5aff}{A\+M\+\_\+\+S\+T\+R\+I\+N\+G\+I\+FY}}(\+\_\+\+\_\+\+L\+I\+N\+E\+\_\+\+\_\+)
+\begin{DoxyCompactList}\small\item\em A string literal representing the current code position. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_aeea77f2723ec2e92aa656d7d599da43e}{A\+M\+\_\+\+P\+U\+B\+L\+IC}}
+\begin{DoxyCompactList}\small\item\em Visibility attribute for symbols exported from the current shared library. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a2ec2bea3a041c69569a2145d3b9a10c5}{A\+M\+\_\+\+P\+R\+I\+V\+A\+TE}}
+\begin{DoxyCompactList}\small\item\em Visibility attribute for symbols internal to the current shared library. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a8f84a559fe6738e52d279572f19a4a80}{A\+M\+\_\+\+I\+M\+P\+O\+RT}}~extern
+\begin{DoxyCompactList}\small\item\em Visibility attribute for symbols imported from an external shared library. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_a795635cc4909d458d58e66c974638249}{A\+M\+\_\+\+D\+E\+P\+R\+E\+C\+A\+T\+ED}}(msg)
+\begin{DoxyCompactList}\small\item\em Issues a compiler warning on function use. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{common_8h_adde7826e22e450172a0c1efe8f9e297f}{A\+M\+\_\+\+A\+PI}}~\mbox{\hyperlink{common_8h_a8f84a559fe6738e52d279572f19a4a80}{A\+M\+\_\+\+I\+M\+P\+O\+RT}}
+\begin{DoxyCompactList}\small\item\em Visibility macro for functions within amlib. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Common macros and definitions. 
+
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{common_8h_a22b5bf911892cf1625862e5583b054c2}\label{common_8h_a22b5bf911892cf1625862e5583b054c2}} 
+\index{common.h@{common.h}!AM\_ABS@{AM\_ABS}}
+\index{AM\_ABS@{AM\_ABS}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_ABS}{AM\_ABS}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+BS(\begin{DoxyParamCaption}\item[{}]{a }\end{DoxyParamCaption})~((a) $<$ 0 ? -\/(a) \+: (a))}
+
+
+
+Absolute value. 
+
+\begin{DoxyNote}{Note}
+Evaluates argument more than once 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_a08ed50d43f27eeb123ff051c756d86aa}\label{common_8h_a08ed50d43f27eeb123ff051c756d86aa}} 
+\index{common.h@{common.h}!AM\_ALIGNOF\_TYPE@{AM\_ALIGNOF\_TYPE}}
+\index{AM\_ALIGNOF\_TYPE@{AM\_ALIGNOF\_TYPE}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_ALIGNOF\_TYPE}{AM\_ALIGNOF\_TYPE}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+L\+I\+G\+N\+O\+F\+\_\+\+T\+Y\+PE(\begin{DoxyParamCaption}\item[{}]{type }\end{DoxyParamCaption})~offsetof(struct \{ char \+\_\+a; type \+\_\+b; \}, \+\_\+b)}
+
+
+
+Determine the alignment of a given type. 
+
+\begin{DoxyNote}{Note}
+The type must not be a function/array type, typedef beforehand if so 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_a202d6122ff44336125c91148c8075edd}\label{common_8h_a202d6122ff44336125c91148c8075edd}} 
+\index{common.h@{common.h}!AM\_ALWAYS\_INLINE@{AM\_ALWAYS\_INLINE}}
+\index{AM\_ALWAYS\_INLINE@{AM\_ALWAYS\_INLINE}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_ALWAYS\_INLINE}{AM\_ALWAYS\_INLINE}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+L\+W\+A\+Y\+S\+\_\+\+I\+N\+L\+I\+NE}
+
+
+
+Function qualifier that suggests the compiler inline it if possible This qualifier is more aggressive that \mbox{\hyperlink{common_8h_a1a675f4df38fa98c9df9502835d6ce81}{A\+M\+\_\+\+I\+N\+L\+I\+NE}}, but does not always guarentee inlining. 
+
+\mbox{\Hypertarget{common_8h_adde7826e22e450172a0c1efe8f9e297f}\label{common_8h_adde7826e22e450172a0c1efe8f9e297f}} 
+\index{common.h@{common.h}!AM\_API@{AM\_API}}
+\index{AM\_API@{AM\_API}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_API}{AM\_API}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+PI~\mbox{\hyperlink{common_8h_a8f84a559fe6738e52d279572f19a4a80}{A\+M\+\_\+\+I\+M\+P\+O\+RT}}}
+
+
+
+Visibility macro for functions within amlib. 
+
+\begin{DoxyNote}{Note}
+This value can be overridden in order to modify amlib visibility This kind of macro should be defined by user code for similar functionality 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_abf8d60f6f4ebacb7c1d9c49663687731}\label{common_8h_abf8d60f6f4ebacb7c1d9c49663687731}} 
+\index{common.h@{common.h}!AM\_APPROX\_EQUAL@{AM\_APPROX\_EQUAL}}
+\index{AM\_APPROX\_EQUAL@{AM\_APPROX\_EQUAL}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_APPROX\_EQUAL}{AM\_APPROX\_EQUAL}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+P\+P\+R\+O\+X\+\_\+\+E\+Q\+U\+AL(\begin{DoxyParamCaption}\item[{}]{a,  }\item[{}]{b,  }\item[{}]{epsilon }\end{DoxyParamCaption})~(\mbox{\hyperlink{common_8h_a22b5bf911892cf1625862e5583b054c2}{A\+M\+\_\+\+A\+BS}}((a) -\/ (b)) $<$ (epsilon))}
+
+
+
+Determine if two numbers are within {\ttfamily epsilon} of another. 
+
+\begin{DoxyNote}{Note}
+Evaluates {\ttfamily a} and {\ttfamily b} more than once This is meant for testing floating-\/point equality 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_afd6ff71829be7220581bdd4364e16711}\label{common_8h_afd6ff71829be7220581bdd4364e16711}} 
+\index{common.h@{common.h}!AM\_ASSUME@{AM\_ASSUME}}
+\index{AM\_ASSUME@{AM\_ASSUME}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_ASSUME}{AM\_ASSUME}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+S\+S\+U\+ME(\begin{DoxyParamCaption}\item[{}]{expr }\end{DoxyParamCaption})~((void)(expr))}
+
+
+
+Compiler can safely assume the expression is true. UB if false. 
+
+\mbox{\Hypertarget{common_8h_adeaeeca7e789554fcbb5d5182245905d}\label{common_8h_adeaeeca7e789554fcbb5d5182245905d}} 
+\index{common.h@{common.h}!AM\_ATTR\_CONST@{AM\_ATTR\_CONST}}
+\index{AM\_ATTR\_CONST@{AM\_ATTR\_CONST}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_ATTR\_CONST}{AM\_ATTR\_CONST}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+C\+O\+N\+ST}
+
+
+
+Function attribute signaling a const function. A const function\textquotesingle{}s return value depends only on its parameters A call of a const function can be optimized-\/out, or re-\/ordered. Example\+: {\ttfamily round}. 
+
+\mbox{\Hypertarget{common_8h_aff9c99dd6da473fca402f170a2439d80}\label{common_8h_aff9c99dd6da473fca402f170a2439d80}} 
+\index{common.h@{common.h}!AM\_ATTR\_MALLOC@{AM\_ATTR\_MALLOC}}
+\index{AM\_ATTR\_MALLOC@{AM\_ATTR\_MALLOC}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_ATTR\_MALLOC}{AM\_ATTR\_MALLOC}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+M\+A\+L\+L\+OC}
+
+
+
+Function attribute signaling {\ttfamily malloc}-\/like behavior. Any non-\/null pointer returned by such a function does not alias with any other pointer, and the data pointed to doesn\textquotesingle{}t contain valid pointers. Example\+: {\ttfamily malloc}. 
+
+\mbox{\Hypertarget{common_8h_ae8270471fc899fce9514b2fd4ae19561}\label{common_8h_ae8270471fc899fce9514b2fd4ae19561}} 
+\index{common.h@{common.h}!AM\_ATTR\_NONNULL@{AM\_ATTR\_NONNULL}}
+\index{AM\_ATTR\_NONNULL@{AM\_ATTR\_NONNULL}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_ATTR\_NONNULL}{AM\_ATTR\_NONNULL}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+N\+O\+N\+N\+U\+LL(\begin{DoxyParamCaption}\item[{}]{args }\end{DoxyParamCaption})}
+
+
+
+Function attribute that signals arguments must not be null. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em args} & Argument indices that cannot be {\ttfamily N\+U\+LL}. Passed as a tuple. 
+\begin{DoxyCode}{1}
+\DoxyCodeLine{\textcolor{keywordtype}{size\_t} strlen(\textcolor{keyword}{const} \textcolor{keywordtype}{char} *) \mbox{\hyperlink{common_8h_ae8270471fc899fce9514b2fd4ae19561}{AM\_ATTR\_NONNULL}}((1)); }
+\end{DoxyCode}
+ \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{common_8h_ac65fcc5a2c5820236dc931189330f227}\label{common_8h_ac65fcc5a2c5820236dc931189330f227}} 
+\index{common.h@{common.h}!AM\_ATTR\_PRINTF@{AM\_ATTR\_PRINTF}}
+\index{AM\_ATTR\_PRINTF@{AM\_ATTR\_PRINTF}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_ATTR\_PRINTF}{AM\_ATTR\_PRINTF}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+P\+R\+I\+N\+TF(\begin{DoxyParamCaption}\item[{}]{string\+\_\+idx,  }\item[{}]{first\+\_\+to\+\_\+check }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em string\+\_\+idx} & The index of the format string \\
+\hline
+{\em first\+\_\+to\+\_\+check} & The first index to check \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{common_8h_aacaac19e0467e19f78579ba9208e121d}\label{common_8h_aacaac19e0467e19f78579ba9208e121d}} 
+\index{common.h@{common.h}!AM\_ATTR\_PURE@{AM\_ATTR\_PURE}}
+\index{AM\_ATTR\_PURE@{AM\_ATTR\_PURE}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_ATTR\_PURE}{AM\_ATTR\_PURE}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+P\+U\+RE}
+
+
+
+Function attribute signaling a pure function. A pure function\textquotesingle{}s return value depends only on its parameters, globals, and pointer dereferences A call of a pure function can be optimized-\/out. Example\+: {\ttfamily strlen}. 
+
+\mbox{\Hypertarget{common_8h_a0d739ec04360d76b43530cc3878d6a55}\label{common_8h_a0d739ec04360d76b43530cc3878d6a55}} 
+\index{common.h@{common.h}!AM\_ATTR\_WARN\_UNUSED\_RESULT@{AM\_ATTR\_WARN\_UNUSED\_RESULT}}
+\index{AM\_ATTR\_WARN\_UNUSED\_RESULT@{AM\_ATTR\_WARN\_UNUSED\_RESULT}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_ATTR\_WARN\_UNUSED\_RESULT}{AM\_ATTR\_WARN\_UNUSED\_RESULT}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+A\+T\+T\+R\+\_\+\+W\+A\+R\+N\+\_\+\+U\+N\+U\+S\+E\+D\+\_\+\+R\+E\+S\+U\+LT}
+
+
+
+Function attribute that signals the function\textquotesingle{}s return value should be inspected. Good example of such a function is {\ttfamily realloc}. 
+
+\mbox{\Hypertarget{common_8h_a325c5378831d0f58aedc998e15b50011}\label{common_8h_a325c5378831d0f58aedc998e15b50011}} 
+\index{common.h@{common.h}!AM\_CLAMP@{AM\_CLAMP}}
+\index{AM\_CLAMP@{AM\_CLAMP}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_CLAMP}{AM\_CLAMP}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+C\+L\+A\+MP(\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{low,  }\item[{}]{high }\end{DoxyParamCaption})~(\mbox{\hyperlink{common_8h_a0c204d55ccbd4a1730ffce55e283c263}{A\+M\+\_\+\+M\+AX}}(low, (\mbox{\hyperlink{common_8h_a63280b0f62113483cc3a5f8e6d44a5ea}{A\+M\+\_\+\+M\+IN}}(x, high))))}
+
+
+
+Clamp a number between two values. 
+
+\begin{DoxyNote}{Note}
+Evaluates arguments more than once 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_ac6563b32b2c34001a20f8a03067912c5}\label{common_8h_ac6563b32b2c34001a20f8a03067912c5}} 
+\index{common.h@{common.h}!AM\_CONCAT@{AM\_CONCAT}}
+\index{AM\_CONCAT@{AM\_CONCAT}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_CONCAT}{AM\_CONCAT}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+C\+O\+N\+C\+AT(\begin{DoxyParamCaption}\item[{}]{a,  }\item[{}]{b }\end{DoxyParamCaption})}
+
+
+
+Concatenate two symbols, expanding macros. 
+
+\mbox{\Hypertarget{common_8h_abfb05fd817117781874fd7946b39d9c9}\label{common_8h_abfb05fd817117781874fd7946b39d9c9}} 
+\index{common.h@{common.h}!AM\_CONTAINER\_OF@{AM\_CONTAINER\_OF}}
+\index{AM\_CONTAINER\_OF@{AM\_CONTAINER\_OF}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_CONTAINER\_OF}{AM\_CONTAINER\_OF}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+C\+O\+N\+T\+A\+I\+N\+E\+R\+\_\+\+OF(\begin{DoxyParamCaption}\item[{}]{ptr,  }\item[{}]{type,  }\item[{}]{member }\end{DoxyParamCaption})~((type $\ast$)((char $\ast$)(ptr) -\/ offsetof(type, member)))}
+
+
+
+Access the parent structure given an internal member. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ptr} & Pointer to the structure member \\
+\hline
+{\em type} & The type of the resulting structure \\
+\hline
+{\em member} & The name of the struct member that {\ttfamily ptr} is \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to the parent structure 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a795635cc4909d458d58e66c974638249}\label{common_8h_a795635cc4909d458d58e66c974638249}} 
+\index{common.h@{common.h}!AM\_DEPRECATED@{AM\_DEPRECATED}}
+\index{AM\_DEPRECATED@{AM\_DEPRECATED}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_DEPRECATED}{AM\_DEPRECATED}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+D\+E\+P\+R\+E\+C\+A\+T\+ED(\begin{DoxyParamCaption}\item[{}]{msg }\end{DoxyParamCaption})}
+
+
+
+Issues a compiler warning on function use. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & The message to be displayed by the compiler when the function is used \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{common_8h_ac1bf525d39d356f6935aec66bb0f2dc6}\label{common_8h_ac1bf525d39d356f6935aec66bb0f2dc6}} 
+\index{common.h@{common.h}!AM\_HAS\_ATTRIBUTE@{AM\_HAS\_ATTRIBUTE}}
+\index{AM\_HAS\_ATTRIBUTE@{AM\_HAS\_ATTRIBUTE}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_HAS\_ATTRIBUTE}{AM\_HAS\_ATTRIBUTE}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+H\+A\+S\+\_\+\+A\+T\+T\+R\+I\+B\+U\+TE(\begin{DoxyParamCaption}\item[{}]{attr }\end{DoxyParamCaption})}
+
+
+
+Determine if Clang supports a given G\+N\+U-\/style attribute. 
+
+\mbox{\Hypertarget{common_8h_afebdd3652b10370b8f1bc2cb2975cfa6}\label{common_8h_afebdd3652b10370b8f1bc2cb2975cfa6}} 
+\index{common.h@{common.h}!AM\_HAS\_BUILTIN@{AM\_HAS\_BUILTIN}}
+\index{AM\_HAS\_BUILTIN@{AM\_HAS\_BUILTIN}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_HAS\_BUILTIN}{AM\_HAS\_BUILTIN}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+H\+A\+S\+\_\+\+B\+U\+I\+L\+T\+IN(\begin{DoxyParamCaption}\item[{}]{attr }\end{DoxyParamCaption})}
+
+
+
+Determine if Clang supports a given \+\_\+\+\_\+builtin\+\_\+$\ast$ function. 
+
+\mbox{\Hypertarget{common_8h_ad2c6d2fd71153104ae8c48e3aad6ade4}\label{common_8h_ad2c6d2fd71153104ae8c48e3aad6ade4}} 
+\index{common.h@{common.h}!AM\_HAS\_EXTENSION@{AM\_HAS\_EXTENSION}}
+\index{AM\_HAS\_EXTENSION@{AM\_HAS\_EXTENSION}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_HAS\_EXTENSION}{AM\_HAS\_EXTENSION}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+H\+A\+S\+\_\+\+E\+X\+T\+E\+N\+S\+I\+ON(\begin{DoxyParamCaption}\item[{}]{attr }\end{DoxyParamCaption})}
+
+
+
+Determine if Clang supports a given language extension. 
+
+\mbox{\Hypertarget{common_8h_a5ac78d76c9f155cee1cd884015b1ed3d}\label{common_8h_a5ac78d76c9f155cee1cd884015b1ed3d}} 
+\index{common.h@{common.h}!AM\_HAS\_FEATURE@{AM\_HAS\_FEATURE}}
+\index{AM\_HAS\_FEATURE@{AM\_HAS\_FEATURE}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_HAS\_FEATURE}{AM\_HAS\_FEATURE}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+H\+A\+S\+\_\+\+F\+E\+A\+T\+U\+RE(\begin{DoxyParamCaption}\item[{}]{attr }\end{DoxyParamCaption})}
+
+
+
+Determine if Clang supports a given language feature. 
+
+\mbox{\Hypertarget{common_8h_a8f84a559fe6738e52d279572f19a4a80}\label{common_8h_a8f84a559fe6738e52d279572f19a4a80}} 
+\index{common.h@{common.h}!AM\_IMPORT@{AM\_IMPORT}}
+\index{AM\_IMPORT@{AM\_IMPORT}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_IMPORT}{AM\_IMPORT}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+I\+M\+P\+O\+RT~extern}
+
+
+
+Visibility attribute for symbols imported from an external shared library. 
+
+\mbox{\Hypertarget{common_8h_a8f84a559fe6738e52d279572f19a4a80}\label{common_8h_a8f84a559fe6738e52d279572f19a4a80}} 
+\index{common.h@{common.h}!AM\_IMPORT@{AM\_IMPORT}}
+\index{AM\_IMPORT@{AM\_IMPORT}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_IMPORT}{AM\_IMPORT}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+I\+M\+P\+O\+RT~extern}
+
+
+
+Visibility attribute for symbols imported from an external shared library. 
+
+\mbox{\Hypertarget{common_8h_a1a675f4df38fa98c9df9502835d6ce81}\label{common_8h_a1a675f4df38fa98c9df9502835d6ce81}} 
+\index{common.h@{common.h}!AM\_INLINE@{AM\_INLINE}}
+\index{AM\_INLINE@{AM\_INLINE}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_INLINE}{AM\_INLINE}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+I\+N\+L\+I\+NE}
+
+
+
+Function qualifier that suggests the compiler inline it if possible. 
+
+\mbox{\Hypertarget{common_8h_a1a7940438c7d61872642b95857224a01}\label{common_8h_a1a7940438c7d61872642b95857224a01}} 
+\index{common.h@{common.h}!AM\_LIKELY@{AM\_LIKELY}}
+\index{AM\_LIKELY@{AM\_LIKELY}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_LIKELY}{AM\_LIKELY}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+L\+I\+K\+E\+LY(\begin{DoxyParamCaption}\item[{}]{expr }\end{DoxyParamCaption})}
+
+
+
+Marks the expression as likely to evaluate to true. 
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}(\mbox{\hyperlink{common_8h_a1a7940438c7d61872642b95857224a01}{AM\_LIKELY}}(foo < 3)) \{ ... \}}
+\end{DoxyCode}
+ \mbox{\Hypertarget{common_8h_a0c204d55ccbd4a1730ffce55e283c263}\label{common_8h_a0c204d55ccbd4a1730ffce55e283c263}} 
+\index{common.h@{common.h}!AM\_MAX@{AM\_MAX}}
+\index{AM\_MAX@{AM\_MAX}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_MAX}{AM\_MAX}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+M\+AX(\begin{DoxyParamCaption}\item[{}]{a,  }\item[{}]{b }\end{DoxyParamCaption})~((a) $>$ (b) ? (a) \+: (b))}
+
+
+
+Numerical maximum. 
+
+\begin{DoxyNote}{Note}
+Evaluates arguments more than once 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_a63280b0f62113483cc3a5f8e6d44a5ea}\label{common_8h_a63280b0f62113483cc3a5f8e6d44a5ea}} 
+\index{common.h@{common.h}!AM\_MIN@{AM\_MIN}}
+\index{AM\_MIN@{AM\_MIN}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_MIN}{AM\_MIN}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+M\+IN(\begin{DoxyParamCaption}\item[{}]{a,  }\item[{}]{b }\end{DoxyParamCaption})~((a) $<$ (b) ? (a) \+: (b))}
+
+
+
+Numerical minimum. 
+
+\begin{DoxyNote}{Note}
+Evaluates arguments more than once 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_a923b774312cd1c6f9654e65e07188b37}\label{common_8h_a923b774312cd1c6f9654e65e07188b37}} 
+\index{common.h@{common.h}!AM\_NEVER\_INLINE@{AM\_NEVER\_INLINE}}
+\index{AM\_NEVER\_INLINE@{AM\_NEVER\_INLINE}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_NEVER\_INLINE}{AM\_NEVER\_INLINE}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+N\+E\+V\+E\+R\+\_\+\+I\+N\+L\+I\+NE}
+
+
+
+Function qualifier that suggests the compiler not inline it. 
+
+\mbox{\Hypertarget{common_8h_ab5b350a9306c984144c32227527a06ac}\label{common_8h_ab5b350a9306c984144c32227527a06ac}} 
+\index{common.h@{common.h}!AM\_PRAGMA@{AM\_PRAGMA}}
+\index{AM\_PRAGMA@{AM\_PRAGMA}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_PRAGMA}{AM\_PRAGMA}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+P\+R\+A\+G\+MA(\begin{DoxyParamCaption}\item[{}]{p }\end{DoxyParamCaption})}
+
+
+
+Insert a pragma as an expression. 
+
+\begin{DoxyNote}{Note}
+This macro takes a token stream as input, N\+OT a string 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_a2ec2bea3a041c69569a2145d3b9a10c5}\label{common_8h_a2ec2bea3a041c69569a2145d3b9a10c5}} 
+\index{common.h@{common.h}!AM\_PRIVATE@{AM\_PRIVATE}}
+\index{AM\_PRIVATE@{AM\_PRIVATE}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_PRIVATE}{AM\_PRIVATE}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+P\+R\+I\+V\+A\+TE}
+
+
+
+Visibility attribute for symbols internal to the current shared library. 
+
+\mbox{\Hypertarget{common_8h_a2ec2bea3a041c69569a2145d3b9a10c5}\label{common_8h_a2ec2bea3a041c69569a2145d3b9a10c5}} 
+\index{common.h@{common.h}!AM\_PRIVATE@{AM\_PRIVATE}}
+\index{AM\_PRIVATE@{AM\_PRIVATE}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_PRIVATE}{AM\_PRIVATE}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+P\+R\+I\+V\+A\+TE}
+
+
+
+Visibility attribute for symbols internal to the current shared library. 
+
+\mbox{\Hypertarget{common_8h_aeea77f2723ec2e92aa656d7d599da43e}\label{common_8h_aeea77f2723ec2e92aa656d7d599da43e}} 
+\index{common.h@{common.h}!AM\_PUBLIC@{AM\_PUBLIC}}
+\index{AM\_PUBLIC@{AM\_PUBLIC}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_PUBLIC}{AM\_PUBLIC}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+P\+U\+B\+L\+IC}
+
+
+
+Visibility attribute for symbols exported from the current shared library. 
+
+\mbox{\Hypertarget{common_8h_aeea77f2723ec2e92aa656d7d599da43e}\label{common_8h_aeea77f2723ec2e92aa656d7d599da43e}} 
+\index{common.h@{common.h}!AM\_PUBLIC@{AM\_PUBLIC}}
+\index{AM\_PUBLIC@{AM\_PUBLIC}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_PUBLIC}{AM\_PUBLIC}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+P\+U\+B\+L\+IC}
+
+
+
+Visibility attribute for symbols exported from the current shared library. 
+
+\mbox{\Hypertarget{common_8h_a559549d069acba2e4b5ad9a55b6e5769}\label{common_8h_a559549d069acba2e4b5ad9a55b6e5769}} 
+\index{common.h@{common.h}!AM\_RESTRICT@{AM\_RESTRICT}}
+\index{AM\_RESTRICT@{AM\_RESTRICT}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_RESTRICT}{AM\_RESTRICT}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+R\+E\+S\+T\+R\+I\+CT}
+
+
+
+Pointer attribute signaling a non-\/aliasing pointer. During execution of a block, if an object accessible through a restricted pointer is modified, that object must be read/written exclusively via that pointer. 
+
+\mbox{\Hypertarget{common_8h_a1be97a61cec3907209dd50318503d9d8}\label{common_8h_a1be97a61cec3907209dd50318503d9d8}} 
+\index{common.h@{common.h}!AM\_STATIC\_ASSERT@{AM\_STATIC\_ASSERT}}
+\index{AM\_STATIC\_ASSERT@{AM\_STATIC\_ASSERT}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_STATIC\_ASSERT}{AM\_STATIC\_ASSERT}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+S\+T\+A\+T\+I\+C\+\_\+\+A\+S\+S\+E\+RT(\begin{DoxyParamCaption}\item[{}]{expr,  }\item[{}]{message }\end{DoxyParamCaption})~typedef char \mbox{\hyperlink{common_8h_ac6563b32b2c34001a20f8a03067912c5}{A\+M\+\_\+\+C\+O\+N\+C\+AT}}(am\+\_\+static\+\_\+assert\+\_\+, \+\_\+\+\_\+\+L\+I\+N\+E\+\_\+\+\_\+)\mbox{[}(expr) ? 1 \+: -\/1\mbox{]}}
+
+\begin{DoxyNote}{Note}
+This macros uses {\bfseries{L\+I\+NE}}, so must be used on different lines 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_a29a14a9c2d11e2cc522b455cd3fe4fc6}\label{common_8h_a29a14a9c2d11e2cc522b455cd3fe4fc6}} 
+\index{common.h@{common.h}!AM\_STDC\_C11@{AM\_STDC\_C11}}
+\index{AM\_STDC\_C11@{AM\_STDC\_C11}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_STDC\_C11}{AM\_STDC\_C11}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C11}
+
+
+
+True if the compiler supports C11. 
+
+\mbox{\Hypertarget{common_8h_a81de061abe395e5016c725ba9cfe2f5a}\label{common_8h_a81de061abe395e5016c725ba9cfe2f5a}} 
+\index{common.h@{common.h}!AM\_STDC\_C17@{AM\_STDC\_C17}}
+\index{AM\_STDC\_C17@{AM\_STDC\_C17}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_STDC\_C17}{AM\_STDC\_C17}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C17}
+
+
+
+True if the compiler supports C17. 
+
+\mbox{\Hypertarget{common_8h_ae0bb0d896ea15664b670ff0047d79161}\label{common_8h_ae0bb0d896ea15664b670ff0047d79161}} 
+\index{common.h@{common.h}!AM\_STDC\_C89@{AM\_STDC\_C89}}
+\index{AM\_STDC\_C89@{AM\_STDC\_C89}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_STDC\_C89}{AM\_STDC\_C89}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C89}
+
+
+
+Synonym for \mbox{\hyperlink{common_8h_a98c2de295716ca9c36d652c249ecf1a9}{A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C90}}. 
+
+\mbox{\Hypertarget{common_8h_a98c2de295716ca9c36d652c249ecf1a9}\label{common_8h_a98c2de295716ca9c36d652c249ecf1a9}} 
+\index{common.h@{common.h}!AM\_STDC\_C90@{AM\_STDC\_C90}}
+\index{AM\_STDC\_C90@{AM\_STDC\_C90}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_STDC\_C90}{AM\_STDC\_C90}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C90}
+
+
+
+True if the compiler supports C90. 
+
+\mbox{\Hypertarget{common_8h_a1c26ef664ef99b75aa5feb6bb72e639c}\label{common_8h_a1c26ef664ef99b75aa5feb6bb72e639c}} 
+\index{common.h@{common.h}!AM\_STDC\_C94@{AM\_STDC\_C94}}
+\index{AM\_STDC\_C94@{AM\_STDC\_C94}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_STDC\_C94}{AM\_STDC\_C94}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C94}
+
+
+
+Synonym for \mbox{\hyperlink{common_8h_adbbc305867f21d451d16e569e976474f}{A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C95}}. 
+
+\mbox{\Hypertarget{common_8h_adbbc305867f21d451d16e569e976474f}\label{common_8h_adbbc305867f21d451d16e569e976474f}} 
+\index{common.h@{common.h}!AM\_STDC\_C95@{AM\_STDC\_C95}}
+\index{AM\_STDC\_C95@{AM\_STDC\_C95}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_STDC\_C95}{AM\_STDC\_C95}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C95}
+
+
+
+True if the compiler supports C95. 
+
+\mbox{\Hypertarget{common_8h_a0dfd360d1eff370c3ea93f522501d66a}\label{common_8h_a0dfd360d1eff370c3ea93f522501d66a}} 
+\index{common.h@{common.h}!AM\_STDC\_C99@{AM\_STDC\_C99}}
+\index{AM\_STDC\_C99@{AM\_STDC\_C99}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_STDC\_C99}{AM\_STDC\_C99}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+S\+T\+D\+C\+\_\+\+C99}
+
+
+
+True if the compiler supports C99. 
+
+\mbox{\Hypertarget{common_8h_acee1f56800f8e80f25d12b4841ba99df}\label{common_8h_acee1f56800f8e80f25d12b4841ba99df}} 
+\index{common.h@{common.h}!AM\_STRFUNC@{AM\_STRFUNC}}
+\index{AM\_STRFUNC@{AM\_STRFUNC}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_STRFUNC}{AM\_STRFUNC}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+S\+T\+R\+F\+U\+NC~((const char $\ast$)(\char`\"{}???\char`\"{}))}
+
+
+
+A {\ttfamily const char $\ast$} pointer to the name of the current function. 
+
+\mbox{\Hypertarget{common_8h_ae9b5e13d6e2112dd9bc092f1dd8e5aff}\label{common_8h_ae9b5e13d6e2112dd9bc092f1dd8e5aff}} 
+\index{common.h@{common.h}!AM\_STRINGIFY@{AM\_STRINGIFY}}
+\index{AM\_STRINGIFY@{AM\_STRINGIFY}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_STRINGIFY}{AM\_STRINGIFY}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+S\+T\+R\+I\+N\+G\+I\+FY(\begin{DoxyParamCaption}\item[{}]{x }\end{DoxyParamCaption})}
+
+
+
+Convert a symbol into a string, expanding macros. 
+
+\mbox{\Hypertarget{common_8h_a55c1f1e9e093d6833d8db2b2a1a1b629}\label{common_8h_a55c1f1e9e093d6833d8db2b2a1a1b629}} 
+\index{common.h@{common.h}!AM\_STRLOC@{AM\_STRLOC}}
+\index{AM\_STRLOC@{AM\_STRLOC}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_STRLOC}{AM\_STRLOC}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+S\+T\+R\+L\+OC~\+\_\+\+\_\+\+F\+I\+L\+E\+\_\+\+\_\+ \char`\"{}\+:\char`\"{} \mbox{\hyperlink{common_8h_ae9b5e13d6e2112dd9bc092f1dd8e5aff}{A\+M\+\_\+\+S\+T\+R\+I\+N\+G\+I\+FY}}(\+\_\+\+\_\+\+L\+I\+N\+E\+\_\+\+\_\+)}
+
+
+
+A string literal representing the current code position. 
+
+\mbox{\Hypertarget{common_8h_a7ce81b75d3b48576716350bda459f1de}\label{common_8h_a7ce81b75d3b48576716350bda459f1de}} 
+\index{common.h@{common.h}!AM\_UNLIKELY@{AM\_UNLIKELY}}
+\index{AM\_UNLIKELY@{AM\_UNLIKELY}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_UNLIKELY}{AM\_UNLIKELY}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+U\+N\+L\+I\+K\+E\+LY(\begin{DoxyParamCaption}\item[{}]{expr }\end{DoxyParamCaption})}
+
+
+
+Marks the expression as unlikely to evaluate to true. 
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}(\mbox{\hyperlink{common_8h_a7ce81b75d3b48576716350bda459f1de}{AM\_UNLIKELY}}(foo >= 3)) \{ ... \}}
+\end{DoxyCode}
+ \mbox{\Hypertarget{common_8h_a3ad5a1b4274503312f3345968c93c329}\label{common_8h_a3ad5a1b4274503312f3345968c93c329}} 
+\index{common.h@{common.h}!AM\_UNREACHABLE@{AM\_UNREACHABLE}}
+\index{AM\_UNREACHABLE@{AM\_UNREACHABLE}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_UNREACHABLE}{AM\_UNREACHABLE}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+U\+N\+R\+E\+A\+C\+H\+A\+B\+LE(\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})~((void)0)}
+
+
+
+Signals the expression is unreachable. UB if control flow reaches here. 
+
+\mbox{\Hypertarget{common_8h_a54e3830b97f5ba896e106cd57b6668b9}\label{common_8h_a54e3830b97f5ba896e106cd57b6668b9}} 
+\index{common.h@{common.h}!AM\_VERSION\_CHECK\_CLANG@{AM\_VERSION\_CHECK\_CLANG}}
+\index{AM\_VERSION\_CHECK\_CLANG@{AM\_VERSION\_CHECK\_CLANG}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_CHECK\_CLANG}{AM\_VERSION\_CHECK\_CLANG}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+C\+L\+A\+NG(\begin{DoxyParamCaption}\item[{}]{major,  }\item[{}]{minor,  }\item[{}]{patch }\end{DoxyParamCaption})}
+
+
+
+Determine if compiling with at least a given version of Clang. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em major} & The major version \\
+\hline
+{\em minor} & The minor version \\
+\hline
+{\em patch} & The patch version \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true when using a compiler with at least the given Clang version 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Don\textquotesingle{}t use this to detect feature availability -\/ use \mbox{\hyperlink{common_8h_afebdd3652b10370b8f1bc2cb2975cfa6}{A\+M\+\_\+\+H\+A\+S\+\_\+\+B\+U\+I\+L\+T\+IN}} and the like 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_a621f546a676d615a25258cefd6e8bfb6}\label{common_8h_a621f546a676d615a25258cefd6e8bfb6}} 
+\index{common.h@{common.h}!AM\_VERSION\_CHECK\_EMSCRIPTEN@{AM\_VERSION\_CHECK\_EMSCRIPTEN}}
+\index{AM\_VERSION\_CHECK\_EMSCRIPTEN@{AM\_VERSION\_CHECK\_EMSCRIPTEN}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_CHECK\_EMSCRIPTEN}{AM\_VERSION\_CHECK\_EMSCRIPTEN}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+E\+M\+S\+C\+R\+I\+P\+T\+EN(\begin{DoxyParamCaption}\item[{}]{major,  }\item[{}]{minor,  }\item[{}]{patch }\end{DoxyParamCaption})}
+
+
+
+Determine if compiling with at least a given version of Emscripten. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em major} & The major version \\
+\hline
+{\em minor} & The minor version \\
+\hline
+{\em patch} & The patch version \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true when using a compiler with at least the given Emscripten version 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a757e69ffc163125af4df3ed2f177b9a1}\label{common_8h_a757e69ffc163125af4df3ed2f177b9a1}} 
+\index{common.h@{common.h}!AM\_VERSION\_CHECK\_GCC@{AM\_VERSION\_CHECK\_GCC}}
+\index{AM\_VERSION\_CHECK\_GCC@{AM\_VERSION\_CHECK\_GCC}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_CHECK\_GCC}{AM\_VERSION\_CHECK\_GCC}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+G\+CC(\begin{DoxyParamCaption}\item[{}]{major,  }\item[{}]{minor,  }\item[{}]{patch }\end{DoxyParamCaption})}
+
+
+
+Determine if compiling with at least a given version of G\+CC. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em major} & The major version \\
+\hline
+{\em minor} & The minor version \\
+\hline
+{\em patch} & The patch version \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true when using a compiler with at least the given G\+CC version 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a90cbcafa9b2128573d9b71e9561741e2}\label{common_8h_a90cbcafa9b2128573d9b71e9561741e2}} 
+\index{common.h@{common.h}!AM\_VERSION\_CHECK\_GNUC@{AM\_VERSION\_CHECK\_GNUC}}
+\index{AM\_VERSION\_CHECK\_GNUC@{AM\_VERSION\_CHECK\_GNUC}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_CHECK\_GNUC}{AM\_VERSION\_CHECK\_GNUC}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+G\+N\+UC(\begin{DoxyParamCaption}\item[{}]{major,  }\item[{}]{minor,  }\item[{}]{patch }\end{DoxyParamCaption})}
+
+
+
+Determine if compiling with at least a given version of G\+N\+UC. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em major} & The major version \\
+\hline
+{\em minor} & The minor version \\
+\hline
+{\em patch} & The patch version \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true when using a compiler with at least the given G\+N\+UC version 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This does not check for gcc, only a compiler that defines {\bfseries{G\+N\+UC}} 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_a2b6b5bc76b9d7c252e12317421d9d67a}\label{common_8h_a2b6b5bc76b9d7c252e12317421d9d67a}} 
+\index{common.h@{common.h}!AM\_VERSION\_CHECK\_INTEL@{AM\_VERSION\_CHECK\_INTEL}}
+\index{AM\_VERSION\_CHECK\_INTEL@{AM\_VERSION\_CHECK\_INTEL}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_CHECK\_INTEL}{AM\_VERSION\_CHECK\_INTEL}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+I\+N\+T\+EL(\begin{DoxyParamCaption}\item[{}]{major,  }\item[{}]{minor,  }\item[{}]{patch }\end{DoxyParamCaption})}
+
+
+
+Determine if compiling with at least a given version of I\+CC. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em major} & The major version \\
+\hline
+{\em minor} & The minor version \\
+\hline
+{\em patch} & The patch version \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true when using a compiler with at least the given Intel version 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a03eb9ad319afb9b54cac5f33ba418cd5}\label{common_8h_a03eb9ad319afb9b54cac5f33ba418cd5}} 
+\index{common.h@{common.h}!AM\_VERSION\_CHECK\_MSVC@{AM\_VERSION\_CHECK\_MSVC}}
+\index{AM\_VERSION\_CHECK\_MSVC@{AM\_VERSION\_CHECK\_MSVC}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_CHECK\_MSVC}{AM\_VERSION\_CHECK\_MSVC}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+M\+S\+VC(\begin{DoxyParamCaption}\item[{}]{major,  }\item[{}]{minor,  }\item[{}]{patch }\end{DoxyParamCaption})}
+
+
+
+Determine if compiling with at least a given version of M\+S\+VC. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em major} & The major version \\
+\hline
+{\em minor} & The minor version \\
+\hline
+{\em patch} & The patch version \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true when using a compiler with at least the given M\+S\+VC version 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_af6598da6a5fbfdba269c59fe4b9d4b8a}\label{common_8h_af6598da6a5fbfdba269c59fe4b9d4b8a}} 
+\index{common.h@{common.h}!AM\_VERSION\_CHECK\_PGI@{AM\_VERSION\_CHECK\_PGI}}
+\index{AM\_VERSION\_CHECK\_PGI@{AM\_VERSION\_CHECK\_PGI}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_CHECK\_PGI}{AM\_VERSION\_CHECK\_PGI}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+P\+GI(\begin{DoxyParamCaption}\item[{}]{major,  }\item[{}]{minor,  }\item[{}]{patch }\end{DoxyParamCaption})}
+
+
+
+Determine if compiling with at least a given version of P\+GI. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em major} & The major version \\
+\hline
+{\em minor} & The minor version \\
+\hline
+{\em patch} & The patch version \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true when using a compiler with at least the given P\+GI version 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_ab078b1503a67eac322d5f816e8eecd00}\label{common_8h_ab078b1503a67eac322d5f816e8eecd00}} 
+\index{common.h@{common.h}!AM\_VERSION\_CHECK\_STDC@{AM\_VERSION\_CHECK\_STDC}}
+\index{AM\_VERSION\_CHECK\_STDC@{AM\_VERSION\_CHECK\_STDC}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_CHECK\_STDC}{AM\_VERSION\_CHECK\_STDC}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+S\+T\+DC(\begin{DoxyParamCaption}\item[{}]{vsn }\end{DoxyParamCaption})}
+
+
+
+Determine if compiling under a given version of the C standard. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vsn} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the compiler supports the given version of C 
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+{\ttfamily vsn} must be one of\+: 89, 90, 94, 95, 99, 11, 17 
+\end{DoxyNote}
+\mbox{\Hypertarget{common_8h_ae81a089d3158ee2f4fa101e00d72447a}\label{common_8h_ae81a089d3158ee2f4fa101e00d72447a}} 
+\index{common.h@{common.h}!AM\_VERSION\_CHECK\_TINYC@{AM\_VERSION\_CHECK\_TINYC}}
+\index{AM\_VERSION\_CHECK\_TINYC@{AM\_VERSION\_CHECK\_TINYC}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_CHECK\_TINYC}{AM\_VERSION\_CHECK\_TINYC}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+C\+H\+E\+C\+K\+\_\+\+T\+I\+N\+YC(\begin{DoxyParamCaption}\item[{}]{major,  }\item[{}]{minor,  }\item[{}]{patch }\end{DoxyParamCaption})}
+
+
+
+Determine if compiling with at least a given version of TinyC. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em major} & The major version \\
+\hline
+{\em minor} & The minor version \\
+\hline
+{\em patch} & The patch version \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true when using a compiler with at least the given TinyC version 
+\end{DoxyReturn}
+\mbox{\Hypertarget{common_8h_a71f18779f8e0515522e944c61204087e}\label{common_8h_a71f18779f8e0515522e944c61204087e}} 
+\index{common.h@{common.h}!AM\_VERSION\_DECODE\_MAJOR@{AM\_VERSION\_DECODE\_MAJOR}}
+\index{AM\_VERSION\_DECODE\_MAJOR@{AM\_VERSION\_DECODE\_MAJOR}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_DECODE\_MAJOR}{AM\_VERSION\_DECODE\_MAJOR}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+D\+E\+C\+O\+D\+E\+\_\+\+M\+A\+J\+OR(\begin{DoxyParamCaption}\item[{}]{vsn }\end{DoxyParamCaption})~((vsn) / 1000000)}
+
+
+
+Extract the major version. 
+
+\mbox{\Hypertarget{common_8h_a19e676c10655be5aba9b86cae3dad796}\label{common_8h_a19e676c10655be5aba9b86cae3dad796}} 
+\index{common.h@{common.h}!AM\_VERSION\_DECODE\_MINOR@{AM\_VERSION\_DECODE\_MINOR}}
+\index{AM\_VERSION\_DECODE\_MINOR@{AM\_VERSION\_DECODE\_MINOR}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_DECODE\_MINOR}{AM\_VERSION\_DECODE\_MINOR}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+D\+E\+C\+O\+D\+E\+\_\+\+M\+I\+N\+OR(\begin{DoxyParamCaption}\item[{}]{vsn }\end{DoxyParamCaption})~(((vsn) \% 1000000) / 1000)}
+
+
+
+Extract the minor version. 
+
+\mbox{\Hypertarget{common_8h_ac25b805e44140be5fd3ca3e3aad27a0d}\label{common_8h_ac25b805e44140be5fd3ca3e3aad27a0d}} 
+\index{common.h@{common.h}!AM\_VERSION\_DECODE\_PATCH@{AM\_VERSION\_DECODE\_PATCH}}
+\index{AM\_VERSION\_DECODE\_PATCH@{AM\_VERSION\_DECODE\_PATCH}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_DECODE\_PATCH}{AM\_VERSION\_DECODE\_PATCH}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+D\+E\+C\+O\+D\+E\+\_\+\+P\+A\+T\+CH(\begin{DoxyParamCaption}\item[{}]{vsn }\end{DoxyParamCaption})~((vsn) \% 1000)}
+
+
+
+Extract the patch version. 
+
+\mbox{\Hypertarget{common_8h_a82b45b4442c02c67567273bad90a7d91}\label{common_8h_a82b45b4442c02c67567273bad90a7d91}} 
+\index{common.h@{common.h}!AM\_VERSION\_ENCODE@{AM\_VERSION\_ENCODE}}
+\index{AM\_VERSION\_ENCODE@{AM\_VERSION\_ENCODE}!common.h@{common.h}}
+\doxysubsubsection{\texorpdfstring{AM\_VERSION\_ENCODE}{AM\_VERSION\_ENCODE}}
+{\footnotesize\ttfamily \#define A\+M\+\_\+\+V\+E\+R\+S\+I\+O\+N\+\_\+\+E\+N\+C\+O\+DE(\begin{DoxyParamCaption}\item[{}]{major,  }\item[{}]{minor,  }\item[{}]{patch }\end{DoxyParamCaption})~(((major) $\ast$ 1000000) + ((minor) $\ast$ 1000) + (patch))}
+
+
+
+Convert major.\+minor.\+patch version into a comparable number. 
+

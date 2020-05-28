@@ -1,0 +1,94 @@
+\hypertarget{alloc_8h}{}\doxysection{alloc.\+h File Reference}
+\label{alloc_8h}\index{alloc.h@{alloc.h}}
+
+
+Definitions of different memory allocators and a usable interface.  
+
+
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}am/common.\+h\char`\"{}}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structam__alloc}{am\+\_\+alloc}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{alloc_8h_aaee0bcf2c75c3c3d652fd4e8a7ff901e}{am\+\_\+malloc}}(alloc,  sz)~((alloc)-\/$>$fn(N\+U\+LL, 0, sz, (void $\ast$)(alloc)-\/$>$ud))
+\item 
+\#define \mbox{\hyperlink{alloc_8h_a8fe19ce3a3a8539fee1acea19f38a0ff}{am\+\_\+free}}(alloc,  ptr,  sz)~((alloc)-\/$>$fn(ptr, sz, 0, (void $\ast$)(alloc)-\/$>$ud))
+\item 
+\#define \mbox{\hyperlink{alloc_8h_a02e0e18012b738a4580b775b99646997}{am\+\_\+realloc}}(alloc,  ptr,  oldsz,  newsz)~((alloc)-\/$>$fn(ptr, oldsz, newsz, (void $\ast$)(alloc)-\/$>$ud))
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef void $\ast$ \mbox{\hyperlink{alloc_8h_a88325b3a94804c7a73a0e54aaddd2acd}{am\+\_\+alloc\+\_\+fn}}(void $\ast$ptr, size\+\_\+t oldsize, size\+\_\+t newsize, void $\ast$ud)
+\begin{DoxyCompactList}\small\item\em Type of an allocator function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Definitions of different memory allocators and a usable interface. 
+
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{alloc_8h_a8fe19ce3a3a8539fee1acea19f38a0ff}\label{alloc_8h_a8fe19ce3a3a8539fee1acea19f38a0ff}} 
+\index{alloc.h@{alloc.h}!am\_free@{am\_free}}
+\index{am\_free@{am\_free}!alloc.h@{alloc.h}}
+\doxysubsubsection{\texorpdfstring{am\_free}{am\_free}}
+{\footnotesize\ttfamily \#define am\+\_\+free(\begin{DoxyParamCaption}\item[{}]{alloc,  }\item[{}]{ptr,  }\item[{}]{sz }\end{DoxyParamCaption})~((alloc)-\/$>$fn(ptr, sz, 0, (void $\ast$)(alloc)-\/$>$ud))}
+
+
+\begin{DoxyParams}{Parameters}
+{\em alloc} & The allocator \\
+\hline
+{\em ptr} & The pointer to free \\
+\hline
+{\em sz} & The size of the memory to be allocated Acts like {\ttfamily free} \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{alloc_8h_aaee0bcf2c75c3c3d652fd4e8a7ff901e}\label{alloc_8h_aaee0bcf2c75c3c3d652fd4e8a7ff901e}} 
+\index{alloc.h@{alloc.h}!am\_malloc@{am\_malloc}}
+\index{am\_malloc@{am\_malloc}!alloc.h@{alloc.h}}
+\doxysubsubsection{\texorpdfstring{am\_malloc}{am\_malloc}}
+{\footnotesize\ttfamily \#define am\+\_\+malloc(\begin{DoxyParamCaption}\item[{}]{alloc,  }\item[{}]{sz }\end{DoxyParamCaption})~((alloc)-\/$>$fn(N\+U\+LL, 0, sz, (void $\ast$)(alloc)-\/$>$ud))}
+
+
+\begin{DoxyParams}{Parameters}
+{\em alloc} & The allocator \\
+\hline
+{\em sz} & The size of the memory to be allocated Acts like {\ttfamily malloc} \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{alloc_8h_a02e0e18012b738a4580b775b99646997}\label{alloc_8h_a02e0e18012b738a4580b775b99646997}} 
+\index{alloc.h@{alloc.h}!am\_realloc@{am\_realloc}}
+\index{am\_realloc@{am\_realloc}!alloc.h@{alloc.h}}
+\doxysubsubsection{\texorpdfstring{am\_realloc}{am\_realloc}}
+{\footnotesize\ttfamily \#define am\+\_\+realloc(\begin{DoxyParamCaption}\item[{}]{alloc,  }\item[{}]{ptr,  }\item[{}]{oldsz,  }\item[{}]{newsz }\end{DoxyParamCaption})~((alloc)-\/$>$fn(ptr, oldsz, newsz, (void $\ast$)(alloc)-\/$>$ud))}
+
+
+\begin{DoxyParams}{Parameters}
+{\em alloc} & The allocator \\
+\hline
+{\em ptr} & The pointer to reallocate \\
+\hline
+{\em oldsz} & The old size of the memory \\
+\hline
+{\em newsz} & The new size of the memory Acts like {\ttfamily realloc} \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{alloc_8h_a88325b3a94804c7a73a0e54aaddd2acd}\label{alloc_8h_a88325b3a94804c7a73a0e54aaddd2acd}} 
+\index{alloc.h@{alloc.h}!am\_alloc\_fn@{am\_alloc\_fn}}
+\index{am\_alloc\_fn@{am\_alloc\_fn}!alloc.h@{alloc.h}}
+\doxysubsubsection{\texorpdfstring{am\_alloc\_fn}{am\_alloc\_fn}}
+{\footnotesize\ttfamily typedef void$\ast$ am\+\_\+alloc\+\_\+fn(void $\ast$ptr, size\+\_\+t oldsize, size\+\_\+t newsize, void $\ast$ud)}
+
+
+
+Type of an allocator function. 
+

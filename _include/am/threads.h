@@ -1,6 +1,3 @@
-/** @file am/threads.h
- * @brief Portable threads implementation
- */
 
 #ifndef AM_THREADS_H
 #define AM_THREADS_H 1
@@ -8,11 +5,11 @@
 #define _GNU_SOURCE
 
 #include <errno.h>
+#include <stdint.h>
+#include <stdbool.h>
 #include <pthread.h>
-#include <sched.h>
-#include "am/common.h"
-
-/* TODO: make portable */
+#include <sched.h> /* sched_yield */
+#include "am/macros.h"
 
 typedef pthread_t          am_thread;
 typedef pthread_mutex_t    am_mutex;
@@ -49,10 +46,10 @@ enum am_thread_error {
 static AM_INLINE enum am_thread_error
 am_thread_create(am_thread *t, am_thread_fn fn, void *userdata)
 {
-AM_PRAGMA(GCC diagnostic push)
-AM_PRAGMA(GCC diagnostic ignored "-Wcast-function-type")
+AM_DIAGNOSTIC_PUSH
+AM_DIAGNOSTIC_IGNORE_CAST_FUNC_TYPE
     int res = pthread_create(t, 0, (void *(*)(void *))fn, userdata);
-AM_PRAGMA(GCC diagnostic pop)
+AM_DIAGNOSTIC_POP
     if (res == 0) {
         return AM_THREAD_SUCCESS;
     } else if (res == ENOMEM) {

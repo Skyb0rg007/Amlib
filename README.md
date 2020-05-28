@@ -80,3 +80,15 @@
 - BUILD\_SHARED
     - Controls whether Amlib is built as a shared library (default: ON)
 
+## Concepts
+
+- Relocatable
+  * A *relocatable* object is one that can be moved around via `memcpy`.
+  * Ex. The head of a singly-linked list is relocatable, but the head of a doubly-linked list is not,
+    since the head of a doubly-linked list is pointed to by the last element.
+  * A *relocate* function is one that fixes up these sorts of issues caused by `memcpy`.
+    - `void relocate(void *data, void *userdata)`
+    - `void relocate_dlist(struct am_list_node *n) { n->prev->next = n; n->next->prev = n; }`
+  * When writing a relocate function, for example to use `am_vector`, the old pointer location is passed as an argument.
+    This pointer does not point to valid memory - use only for comparisons, not for dereference.
+
